@@ -15,6 +15,7 @@ from muse_agent.models.base import BaseVisionModel
 from muse_agent.perception.grounding import VisualGrounder
 from muse_agent.perception.screen import ScreenPerceiver
 from muse_agent.perception.visual_diff import VisualVerifier
+from muse_agent.core.fast_decision import FastDecisionEngine
 
 logger = logging.getLogger("muse_agent.core.agent")
 
@@ -55,6 +56,7 @@ class MuseAgent:
         )
         self.controller = controller or OSController(perceiver=self.perceiver, sentinel=self.sentinel)
         self.planner = HierarchicalPlanner()
+        self.fast_engine = FastDecisionEngine()
         self.memory = TrajectoryMemory(run_id=run_id, base_dir=settings.trajectories_dir)
 
         self.state = AgentState.IDLE
@@ -124,14 +126,30 @@ class MuseAgent:
                     max_width=settings.screenshot_max_width
                 )
 
-                # 3. DECIDE: Query Meta Muse Model
+                # 3. DECIDE: Dual-Gear Decision Routing (Gear 1: Jev Fast-Path vs Gear 2: Meta Muse Vision)
                 history_ctx = self.memory.get_context_history()
-                action = await self.model.predict_action(
-                    screenshot_b64=b64_str,
+                front_app = self.controller.macos.get_frontmost_app().get("app", "") if self.controller.macos.is_macos() else ""
+                candidates_list = self.grounder.detect_ui_candidates(raw_before)
+                fast_res = self.fast_engine.evaluate_candidates(
                     goal=goal,
-                    history=history_ctx,
-                    som_tags=mark_coords
+                    candidates=candidates_list,
+                    som_coords=mark_coords,
+                    active_app=front_app,
+                    history=history_ctx
                 )
+
+                if fast_res and fast_res.is_fast_path:
+                    action = fast_res.action
+                    logger.info(f"Gear 1 (Jev Fast-Path) triggered ({fast_res.latency_ms}ms, confidence: {fast_res.confidence:.2f}): {action.action}")
+                else:
+                    # Gear 2: Full Multimodal Meta Muse Frontier Model
+                    history_ctx = self.memory.get_context_history()
+                    action = await self.model.predict_action(
+                        screenshot_b64=b64_str,
+                        goal=goal,
+                        history=history_ctx,
+                        som_tags=mark_coords
+                    )
 
                 # Annotate action on image for visual telemetry
                 if action.x is not None and action.y is not None:
