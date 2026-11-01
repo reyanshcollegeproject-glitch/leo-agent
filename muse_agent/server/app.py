@@ -74,14 +74,16 @@ class RunTaskRequest(BaseModel):
 @app.get("/api/status")
 async def get_status():
     global current_agent
+    model_name = settings.muse_model_name
     if current_agent:
         return {
             "state": current_agent.state.value,
             "current_goal": current_agent.current_goal,
             "steps_count": len(current_agent.memory.steps),
-            "run_id": current_agent.memory.run_id
+            "run_id": current_agent.memory.run_id,
+            "model_name": model_name
         }
-    return {"state": AgentState.IDLE.value, "current_goal": None, "steps_count": 0}
+    return {"state": AgentState.IDLE.value, "current_goal": None, "steps_count": 0, "model_name": model_name}
 
 
 @app.post("/api/run")
@@ -167,13 +169,13 @@ async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     try:
         # Send initial status
-        if current_agent:
-            await websocket.send_json({
-                "type": "initial_state",
-                "state": current_agent.state.value,
-                "goal": current_agent.current_goal,
-                "steps": [s.action for s in current_agent.memory.steps]
-            })
+        await websocket.send_json({
+            "type": "initial_state",
+            "state": current_agent.state.value if current_agent else AgentState.IDLE.value,
+            "goal": current_agent.current_goal if current_agent else None,
+            "model_name": settings.muse_model_name,
+            "steps": [s.action for s in current_agent.memory.steps] if current_agent else []
+        })
         while True:
             data = await websocket.receive_text()
             # Handle client commands if any

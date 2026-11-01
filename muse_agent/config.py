@@ -25,8 +25,8 @@ class AgentConfig(BaseSettings):
         description="Provider identifier: 'meta_muse', 'openai', 'anthropic', or 'custom'"
     )
     muse_model_name: str = Field(
-        default="muse-spark-1.3",
-        description="Meta AI Muse model version (e.g., muse-spark-1.3, muse-wonder-1.0)"
+        default="muse-wonder-1.0",
+        description="Meta AI Muse model version: 'muse-wonder-1.0' (flagship) or 'muse-spark-1.3' (fast agent)"
     )
     muse_api_key: Optional[str] = Field(
         default=os.getenv("MUSE_API_KEY", ""),

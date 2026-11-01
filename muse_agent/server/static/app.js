@@ -73,6 +73,10 @@ function updateState(state) {
 function handleServerEvent(msg) {
   if (msg.type === 'initial_state' || msg.type === 'state_change') {
     updateState(msg.state);
+    if (msg.model_name) {
+      const modelEl = document.getElementById('active-model-name');
+      if (modelEl) modelEl.textContent = msg.model_name;
+    }
   } else if (msg.type === 'step_telemetry') {
     const data = msg.data;
     stepCount = data.step;
