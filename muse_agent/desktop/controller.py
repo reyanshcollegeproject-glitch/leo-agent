@@ -138,3 +138,4 @@ class DesktopWindowController:
         end tell
         '''
         self._run_applescript(script)
+

@@ -1,8 +1,28 @@
 # 🧠 Meta Muse 24/7 Autonomous Laptop Control Agent
 
-> **Production-grade, benchmark-setting autonomous OS agent running 24/7 locally on your laptop, powered by Meta AI's frontier Muse models (`muse-wonder-1.0` & `muse-spark-1.3`).**
+> **Production-grade, benchmark-setting autonomous macOS agent running 24/7 locally on your MacBook, featuring a 100% native Swift & SwiftUI application with Chat & Voice Talk interface, powered by Meta AI's frontier Muse models (`muse-wonder-1.0` & `muse-spark-1.3`).**
 
-Built from scratch, this system empowers Meta AI's frontier **Muse** models to operate as a perpetual, self-healing background autonomous OS daemon that monitors laptop state, dispatches queued tasks, executes recurring cron automations, and navigates desktop interfaces with sub-pixel visual grounding and Jev-inspired fast decision routing.
+Built from scratch, this system empowers Meta AI's frontier **Muse** models to operate as an authentic, perpetual, interactive desktop companion. It features an executive **Blue, White, and Black** native Swift macOS application with real-time text chat, speech talk mode (`say` & microphone voice transcription), 24/7 background persistence, and Jev-inspired fast decision execution.
+
+---
+
+## 💻 Native Swift macOS Application (`MetaMuse.app`)
+
+Launch the native Swift macOS companion directly:
+```bash
+./muse-agent app
+# or
+open MetaMuse.app
+```
+
+### ✨ Native Swift UI/UX Highlights
+- **Executive Palette (No Neon!)**: Refined Obsidian Black (`#0A0D14`), Apple Royal Blue (`#007AFF`), and Studio White (`#FFFFFF`).
+- **Interactive Chat & Voice Talk**:
+  - **Press Return to Execute**: No tedious "Run" button clicks required. Type any natural instruction and hit `Return`.
+  - **Voice Talk Mode**: Speak into your microphone using the Voice button; the agent transcribes, executes, and speaks confirmations aloud using macOS native speech synthesis (`say`).
+  - **Dual-Gear Fast Execution**: Instant (<50ms) intent execution for media ("open chrome and play weekend song"), browser navigation, audio volume, and app control.
+  - **macOS Screen Recording Status**: Transparent permission banner with one-click access to macOS System Settings.
+  - **Pin on Top**: Keep the agent floating gracefully over any workspace.
 
 ---
 

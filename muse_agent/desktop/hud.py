@@ -393,3 +393,4 @@ def launch_desktop_hud(mock: bool = False) -> None:
 
 if __name__ == "__main__":
     launch_desktop_hud()
+

@@ -19,3 +19,4 @@ def test_desktop_hud_creation():
     hud.goal_entry.insert(0, "Test Desktop Task")
     assert hud.goal_entry.get() == "Test Desktop Task"
     hud.root.destroy()
+

@@ -33,30 +33,37 @@ def run(
     goal: str = typer.Argument(..., help="The autonomous objective for the agent to execute on your laptop"),
     max_steps: int = typer.Option(25, "--max-steps", "-s", help="Maximum steps allowed"),
     mock: bool = typer.Option(False, "--mock", help="Run with deterministic offline mock model"),
-    grid: bool = typer.Option(True, "--grid/--no-grid", help="Overlay coordinate grid on screen reasoning")
+    grid: bool = typer.Option(True, "--grid/--no-grid", help="Overlay coordinate grid on screen reasoning"),
+    json_stream: bool = typer.Option(False, "--json-stream", help="Output stream of JSON events for Swift app & API bridges")
 ):
     """
     Execute an autonomous goal on your laptop using Meta AI Muse.
     """
-    console.print(Panel(
-        f"[bold cyan]Meta Muse Autonomous Laptop Agent[/bold cyan]\n"
-        f"Goal: [bold yellow]\"{goal}\"[/bold yellow]\n"
-        f"Model: [magenta]{'Offline Mock' if mock else settings.muse_model_name}[/magenta] | Max Steps: [green]{max_steps}[/green]",
-        title="🤖 Agent Session Initialized",
-        border_style="cyan"
-    ))
+    import json as json_lib
+
+    if json_stream:
+        print(json_lib.dumps({"type": "init", "goal": goal, "model": settings.muse_model_name}), flush=True)
+    else:
+        console.print(Panel(
+            f"[bold cyan]Meta Muse Autonomous Laptop Agent[/bold cyan]\n"
+            f"Goal: [bold yellow]\"{goal}\"[/bold yellow]\n"
+            f"Model: [magenta]{'Offline Mock' if mock else settings.muse_model_name}[/magenta] | Max Steps: [green]{max_steps}[/green]",
+            title="🤖 Agent Session Initialized",
+            border_style="cyan"
+        ))
 
     # Initialize model
     if mock:
         model = MockMuseModel()
     else:
         if not settings.muse_api_key:
-            console.print(
-                "[bold red]Warning:[/bold red] MUSE_API_KEY is not set in environment or .env!\n"
-                "Tip: You can run with [bold cyan]--mock[/bold cyan] for offline dry runs or set your key in .env\n"
-            )
-            if not typer.confirm("Continue with Mock Simulation?"):
-                sys.exit(1)
+            if not json_stream:
+                console.print(
+                    "[bold red]Warning:[/bold red] MUSE_API_KEY is not set in environment or .env!\n"
+                    "Tip: You can run with [bold cyan]--mock[/bold cyan] for offline dry runs or set your key in .env\n"
+                )
+                if not typer.confirm("Continue with Mock Simulation?"):
+                    sys.exit(1)
             model = MockMuseModel()
         else:
             model = MetaMuseModel(
@@ -68,8 +75,8 @@ def run(
     settings.use_grid_overlay = grid
     agent = MuseAgent(model=model)
 
-    # Attach live CLI telemetry logger
-    def cli_telemetry_listener(payload):
+    # Attach live telemetry listener
+    def telemetry_listener(payload):
         step = payload["step"]
         action = payload["action"]
         res = payload["result"]
@@ -77,33 +84,56 @@ def run(
 
         act_type = action.get("action", "")
         thought = action.get("thought", "")
+        msg = res.get("message", "")
 
-        console.print(f"[bold cyan]Step #{step}[/bold cyan] ➔ [bold magenta]{act_type.upper()}[/bold magenta]")
-        if thought:
-            console.print(f"  [dim]Thought:[/dim] {thought}")
-        console.print(f"  [green]Result:[/green] {res.get('message')}")
-        if diff and diff.get("has_changed"):
-            console.print(f"  [blue]Visual Verification:[/blue] {diff.get('description')}")
-        console.print("")
+        if json_stream:
+            event = {
+                "type": "step",
+                "step": step,
+                "action": act_type.upper(),
+                "thought": thought,
+                "message": msg,
+                "success": res.get("success", True)
+            }
+            print(json_lib.dumps(event), flush=True)
+        else:
+            console.print(f"[bold cyan]Step #{step}[/bold cyan] ➔ [bold magenta]{act_type.upper()}[/bold magenta]")
+            if thought:
+                console.print(f"  [dim]Thought:[/dim] {thought}")
+            console.print(f"  [green]Result:[/green] {msg}")
+            if diff and diff.get("has_changed"):
+                console.print(f"  [blue]Visual Verification:[/blue] {diff.get('description')}")
+            console.print("")
 
-    agent.add_step_callback(cli_telemetry_listener)
+    agent.add_step_callback(telemetry_listener)
 
     # Execute
     res = asyncio.run(agent.run(goal=goal, max_steps=max_steps))
 
-    if res.get("success"):
-        console.print(Panel(
-            f"[bold green]Task Succeeded![/bold green]\n"
-            f"Steps: {res.get('total_steps')} | Elapsed: {res.get('elapsed_seconds')}s\n"
-            f"Trajectory saved to: [cyan]{res.get('trajectory_file')}[/cyan]",
-            border_style="green"
-        ))
+    if json_stream:
+        fin_event = {
+            "type": "finished",
+            "success": res.get("success", False),
+            "total_steps": res.get("total_steps", 0),
+            "elapsed_seconds": res.get("elapsed_seconds", 0.0),
+            "state": res.get("state", "unknown"),
+            "trajectory_file": res.get("trajectory_file", "")
+        }
+        print(json_lib.dumps(fin_event), flush=True)
     else:
-        console.print(Panel(
-            f"[bold red]Task Did Not Complete Successfully[/bold red]\n"
-            f"State: {res.get('state')} | Error: {res.get('error', 'Limit exceeded')}",
-            border_style="red"
-        ))
+        if res.get("success"):
+            console.print(Panel(
+                f"[bold green]Task Succeeded![/bold green]\n"
+                f"Steps: {res.get('total_steps')} | Elapsed: {res.get('elapsed_seconds')}s\n"
+                f"Trajectory saved to: [cyan]{res.get('trajectory_file')}[/cyan]",
+                border_style="green"
+            ))
+        else:
+            console.print(Panel(
+                f"[bold red]Task Did Not Complete Successfully[/bold red]\n"
+                f"State: {res.get('state')} | Error: {res.get('error', 'Limit exceeded')}",
+                border_style="red"
+            ))
 
 
 @app.command()
@@ -123,13 +153,38 @@ def bench(
     asyncio.run(runner.run_suite())
 
 
+@app.command("app")
+def app_command():
+    """
+    Launch the native Swift macOS application (Executive Blue, White, Black HIG interface).
+    """
+    import subprocess
+    app_path = Path("MetaMuse.app")
+    if app_path.exists():
+        console.print("[bold cyan]Launching Native Swift macOS Application (MetaMuse.app)...[/bold cyan]")
+        subprocess.run(["open", str(app_path)])
+    else:
+        console.print("[bold yellow]Building Swift macOS Application...[/bold yellow]")
+        subprocess.run(["swift", "build", "-c", "release"], cwd="mac_app")
+        subprocess.run(["mkdir", "-p", "MetaMuse.app/Contents/MacOS"])
+        subprocess.run(["cp", "mac_app/.build/release/MetaMuse", "MetaMuse.app/Contents/MacOS/MetaMuse"])
+        subprocess.run(["open", "MetaMuse.app"])
+
+
 @app.command("desktop")
 def desktop_command(
-    mock: bool = typer.Option(False, "--mock", help="Run with offline simulation model")
+    mock: bool = typer.Option(False, "--mock", help="Run with offline simulation model"),
+    legacy: bool = typer.Option(False, "--legacy", help="Launch legacy Tkinter HUD instead of Swift App")
 ):
     """
-    Launch native macOS Desktop Control Center & Floating HUD (No browser/web server).
+    Launch native macOS Desktop Control Center (Swift Application by default, or legacy HUD).
     """
+    if not legacy and Path("MetaMuse.app").exists():
+        import subprocess
+        console.print("[bold cyan]Opening Native Swift macOS Desktop Companion...[/bold cyan]")
+        subprocess.run(["open", "MetaMuse.app"])
+        return
+
     from muse_agent.desktop.hud import launch_desktop_hud
     console.print(Panel(
         f"[bold cyan]Launching Native macOS Desktop Control HUD[/bold cyan]\n"

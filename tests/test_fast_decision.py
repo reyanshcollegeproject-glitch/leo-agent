@@ -45,3 +45,20 @@ def test_fast_decision_fallback_to_deep_vision():
     # Should be None so agent escalates to Meta Muse Vision
     assert res is None
 
+
+def test_fast_decision_media_playback():
+    engine = FastDecisionEngine()
+    res = engine.evaluate_candidates(
+        goal="open chrome and play weekend song",
+        candidates=[],
+        som_coords={},
+        active_app=""
+    )
+    assert res is not None
+    assert res.is_fast_path
+    assert res.action.action == ActionType.RUN_COMMAND
+    assert "youtube.com" in res.action.command
+    assert "weeknd" in res.action.command
+    assert res.confidence >= 0.9
+
+

@@ -1,0 +1,85 @@
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ Starting Meta Muse 24/7 Autonomous Laptop Daemon                             │
+│ Model: muse-wonder-1.0 | Uptime: Continuous                                  │
+│ Safety: Sentinel Active | Power Governor: Enabled                            │
+│ Press Ctrl+C to halt daemon                                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[2026-11-01 23:16:06,955] [INFO] muse_agent.daemon.service: 🚀 Meta Muse 24/7 Autonomous Daemon started (PID 35891)
+[2026-11-01 23:16:06,955] [INFO] muse_agent.daemon.service: Model: muse-wonder-1.0 | Endpoint: https://api.meta.ai/v1/chat/completions
+[2026-11-01 23:16:06,982] [INFO] muse_agent.daemon.scheduler: Enqueued scheduled job 'Daily Backup' (Task #2). Next run: 2026-11-02 00:00:00
+[2026-11-01 23:16:06,982] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:16:12,034] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:16:17,077] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:16:22,110] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:16:27,164] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:16:32,214] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:16:37,266] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:16:42,317] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:16:47,371] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:16:52,397] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:16:57,451] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 1.0s)
+[2026-11-01 23:17:02,505] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:07,560] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:12,620] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:17,675] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:22,723] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:27,760] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:32,800] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:37,844] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:42,896] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:47,948] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:53,002] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:17:58,042] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:03,079] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:08,117] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 1.0s)
+[2026-11-01 23:18:13,181] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:18,227] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:23,270] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:28,316] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:33,353] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:38,407] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:43,460] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:48,513] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:53,560] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:18:58,614] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:19:03,665] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:19:08,722] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 1.0s)
+[2026-11-01 23:19:13,775] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 6.0s)
+[2026-11-01 23:19:18,828] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 12.0s)
+[2026-11-01 23:19:23,877] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 1.0s)
+[2026-11-01 23:19:28,922] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 1.0s)
+[2026-11-01 23:19:33,962] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:19:39,019] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:19:44,251] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:19:49,314] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:19:54,356] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:19:59,412] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 0.0s)
+[2026-11-01 23:20:04,448] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 5.0s)
+[2026-11-01 23:20:09,488] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 10.0s)
+[2026-11-01 23:20:14,526] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 16.0s)
+[2026-11-01 23:20:19,566] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 21.0s)
+[2026-11-01 23:20:24,608] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 26.0s)
+[2026-11-01 23:20:29,653] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 31.0s)
+[2026-11-01 23:20:34,689] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 36.0s)
+[2026-11-01 23:20:39,744] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 41.0s)
+[2026-11-01 23:20:44,788] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 46.0s)
+[2026-11-01 23:20:49,833] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 51.0s)
+[2026-11-01 23:20:54,877] [INFO] muse_agent.daemon.service: Deferring Task #1 (user actively interacting with mouse/keyboard, idle: 56.0s)
+[2026-11-01 23:20:59,921] [INFO] muse_agent.daemon.service: Starting execution of Task #1 [Priority: high]: "Check system clipboard and report status"
+[2026-11-01 23:20:59,927] [INFO] muse_agent.core.agent: Starting autonomous agent run for goal: 'Check system clipboard and report status' (limit: 25 steps)
+[2026-11-01 23:21:00,205] [INFO] muse_agent.core.agent: Gear 1 (Jev Fast-Path) triggered (0.22ms, confidence: 0.98): ActionType.READ_CLIPBOARD
+[2026-11-01 23:21:01,319] [INFO] muse_agent.core.agent: Gear 1 (Jev Fast-Path) triggered (0.05ms, confidence: 0.99): ActionType.TASK_COMPLETE
+[2026-11-01 23:21:01,328] [INFO] muse_agent.daemon.service: Task #1 finished successfully!
+[2026-11-01 23:21:02,381] [INFO] muse_agent.daemon.service: Starting execution of Task #2 [Priority: normal]: "Archive downloads folder"
+[2026-11-01 23:21:02,383] [INFO] muse_agent.core.agent: Starting autonomous agent run for goal: 'Archive downloads folder' (limit: 25 steps)
+[2026-11-01 23:21:07,772] [INFO] httpx: HTTP Request: POST https://api.meta.ai/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-11-01 23:21:30,202] [INFO] httpx: HTTP Request: POST https://api.meta.ai/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-11-01 23:21:37,443] [INFO] httpx: HTTP Request: POST https://api.meta.ai/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-11-01 23:21:48,196] [INFO] httpx: HTTP Request: POST https://api.meta.ai/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-11-01 23:21:58,695] [INFO] httpx: HTTP Request: POST https://api.meta.ai/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-11-01 23:22:08,237] [INFO] httpx: HTTP Request: POST https://api.meta.ai/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-11-01 23:22:17,135] [INFO] httpx: HTTP Request: POST https://api.meta.ai/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-11-01 23:22:28,509] [INFO] httpx: HTTP Request: POST https://api.meta.ai/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-11-01 23:22:41,855] [INFO] httpx: HTTP Request: POST https://api.meta.ai/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-11-01 23:22:48,752] [INFO] httpx: HTTP Request: POST https://api.meta.ai/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-11-01 23:22:48,766] [INFO] muse_agent.daemon.service: Task #2 finished successfully!

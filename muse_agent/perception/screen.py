@@ -8,7 +8,13 @@ import tempfile
 from dataclasses import dataclass
 from typing import Tuple, Optional
 import mss
-from PIL import Image
+from PIL import Image, ImageStat
+
+try:
+    import Quartz
+    QUARTZ_AVAILABLE = True
+except ImportError:
+    QUARTZ_AVAILABLE = False
 
 try:
     import pyautogui
@@ -36,6 +42,40 @@ class ScreenPerceiver:
     def __init__(self, display_index: int = 0):
         self.display_index = display_index
         self._screen_info = self._detect_screen_geometry()
+        self.last_capture_was_blank = False
+
+    @staticmethod
+    def has_screen_recording_permission() -> bool:
+        """Check whether macOS has granted Screen Recording permission."""
+        if QUARTZ_AVAILABLE:
+            try:
+                return Quartz.CGPreflightScreenCaptureAccess()
+            except Exception:
+                pass
+        return True
+
+    @staticmethod
+    def request_screen_recording_permission() -> None:
+        """Trigger macOS prompt and open Screen Recording Privacy Settings."""
+        if QUARTZ_AVAILABLE:
+            try:
+                Quartz.CGRequestScreenCaptureAccess()
+            except Exception:
+                pass
+        try:
+            subprocess.run(["open", "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture"])
+        except Exception:
+            pass
+
+    @staticmethod
+    def is_image_blank(img: Image.Image) -> bool:
+        """Check if image is solid dark/blank due to missing OS permissions."""
+        try:
+            stat = ImageStat.Stat(img)
+            # If standard deviation is 0 or extremely low, image has no visible desktop elements
+            return all(s < 1.0 for s in stat.stddev)
+        except Exception:
+            return False
 
     def _detect_screen_geometry(self) -> ScreenInfo:
         """Detect display resolution, logical size, and Retina scale factor."""
@@ -85,6 +125,7 @@ class ScreenPerceiver:
                 mon = monitors[min(self.display_index + 1, len(monitors) - 1)]
                 sct_img = sct.grab(mon)
                 img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+                self.last_capture_was_blank = self.is_image_blank(img)
                 return img
         except Exception as e:
             # Fallback 1: screencapture on macOS
