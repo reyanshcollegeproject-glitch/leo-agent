@@ -58,6 +58,10 @@ struct MainView: View {
             setWindowTopmost(isPinnedOnTop)
         }
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("TriggerVoiceDictation"))) { _ in
+            if let window = NSApplication.shared.windows.first {
+                window.makeKeyAndOrderFront(nil)
+                NSApp.activate(ignoringOtherApps: true)
+            }
             bridge.toggleVoiceRecording()
         }
     }
@@ -333,15 +337,15 @@ struct MainView: View {
     }
 
     private func adjustWindowSize(expanded: Bool) {
-        if let window = NSApplication.shared.windows.first {
-            var frame = window.frame
-            let targetHeight: CGFloat = expanded ? 680 : 58
-            let targetWidth: CGFloat = expanded ? 640 : 480
-            frame.origin.y += (frame.size.height - targetHeight)
-            frame.size.height = targetHeight
-            frame.size.width = targetWidth
-            window.setFrame(frame, display: true, animate: true)
-        }
+        guard let window = NSApplication.shared.windows.first,
+              let screen = NSScreen.main else { return }
+        let screenFrame = screen.visibleFrame
+        let targetWidth: CGFloat = expanded ? 620 : 500
+        let targetHeight: CGFloat = expanded ? 680 : 58
+        let x = screenFrame.origin.x + (screenFrame.width - targetWidth) / 2
+        let y = screenFrame.origin.y + screenFrame.height - targetHeight - 10
+        let newFrame = NSRect(x: x, y: y, width: targetWidth, height: targetHeight)
+        window.setFrame(newFrame, display: true, animate: true)
     }
 }
 

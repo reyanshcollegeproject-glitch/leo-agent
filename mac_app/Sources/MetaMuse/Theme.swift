@@ -24,3 +24,4 @@ struct Theme {
     static let successBlue = Color(red: 0.15, green: 0.60, blue: 0.95)
     static let alertRed = Color(red: 0.92, green: 0.25, blue: 0.28)
 }
+

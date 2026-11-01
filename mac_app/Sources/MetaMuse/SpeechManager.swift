@@ -93,3 +93,4 @@ class SpeechManager: NSObject, SFSpeechRecognizerDelegate {
         return accumulatedTranscript
     }
 }
+

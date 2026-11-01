@@ -161,6 +161,145 @@ class FastDecisionEngine:
                     needs_review=False
                 )
 
+        # Rule 0.9: Screenshot Capture
+        if "screenshot" in goal_lower or "capture screen" in goal_lower:
+            already_shot = any(h.get("action") == ActionType.RUN_COMMAND.value for h in history)
+            if not already_shot:
+                cmd = 'screencapture -x ~/Desktop/Screenshot_$(date +%s).png'
+                latency = (time.perf_counter() - start_t) * 1000.0
+                return FastDecisionResult(
+                    action=AgentAction(
+                        action=ActionType.RUN_COMMAND,
+                        command=cmd,
+                        thought="Capturing desktop screenshot and saving to ~/Desktop."
+                    ),
+                    confidence=0.99,
+                    is_fast_path=True,
+                    latency_ms=round(latency, 2),
+                    evidence="Screen capture utility triggered.",
+                    needs_review=False
+                )
+            else:
+                return FastDecisionResult(
+                    action=AgentAction(
+                        action=ActionType.TASK_COMPLETE,
+                        thought="Screenshot captured and saved to Desktop."
+                    ),
+                    confidence=0.99,
+                    is_fast_path=True,
+                    latency_ms=1.0,
+                    evidence="Screenshot completed.",
+                    needs_review=False
+                )
+
+        # Rule 0.95: Finder & Folder Navigation
+        if "finder" in goal_lower or any(p in goal_lower for p in ("open desktop", "open downloads", "open documents", "show desktop")):
+            already_finder = any(h.get("action") == ActionType.RUN_COMMAND.value for h in history)
+            if not already_finder:
+                target_dir = "~/Desktop"
+                if "downloads" in goal_lower:
+                    target_dir = "~/Downloads"
+                elif "documents" in goal_lower:
+                    target_dir = "~/Documents"
+                cmd = f"open {target_dir}"
+                latency = (time.perf_counter() - start_t) * 1000.0
+                return FastDecisionResult(
+                    action=AgentAction(
+                        action=ActionType.RUN_COMMAND,
+                        command=cmd,
+                        thought=f"Opening Finder to '{target_dir}' directly."
+                    ),
+                    confidence=0.99,
+                    is_fast_path=True,
+                    latency_ms=round(latency, 2),
+                    evidence="Finder folder navigation dispatched.",
+                    needs_review=False
+                )
+            else:
+                return FastDecisionResult(
+                    action=AgentAction(
+                        action=ActionType.TASK_COMPLETE,
+                        thought="Finder folder opened successfully."
+                    ),
+                    confidence=0.99,
+                    is_fast_path=True,
+                    latency_ms=1.0,
+                    evidence="Finder active.",
+                    needs_review=False
+                )
+
+        # Rule 0.96: Google Search
+        if "search" in goal_lower and ("google" in goal_lower or "for" in goal_lower):
+            already_searched = any(h.get("action") == ActionType.RUN_COMMAND.value for h in history)
+            if not already_searched:
+                import urllib.parse
+                sq = goal_lower
+                for p in ("search google for", "search for", "google", "search"):
+                    if sq.startswith(p):
+                        sq = sq[len(p):].strip()
+                if sq.endswith("on google"):
+                    sq = sq[:-len("on google")].strip()
+                encoded_sq = urllib.parse.quote_plus(sq or "macOS automation")
+                search_url = f"https://www.google.com/search?q={encoded_sq}"
+                cmd = f'open -a "Google Chrome" "{search_url}" 2>/dev/null || open "{search_url}"'
+                latency = (time.perf_counter() - start_t) * 1000.0
+                return FastDecisionResult(
+                    action=AgentAction(
+                        action=ActionType.RUN_COMMAND,
+                        command=cmd,
+                        thought=f"Executing Google search for '{sq}' in browser."
+                    ),
+                    confidence=0.99,
+                    is_fast_path=True,
+                    latency_ms=round(latency, 2),
+                    evidence="Google search URL dispatched.",
+                    needs_review=False
+                )
+            else:
+                return FastDecisionResult(
+                    action=AgentAction(
+                        action=ActionType.TASK_COMPLETE,
+                        thought="Google search query loaded in browser."
+                    ),
+                    confidence=0.99,
+                    is_fast_path=True,
+                    latency_ms=1.0,
+                    evidence="Search loaded.",
+                    needs_review=False
+                )
+
+        # Rule 0.97: App Termination (Quit / Close App)
+        if any(goal_lower.startswith(p) for p in ("close ", "quit ")) and not any(w in goal_lower for w in ("tab", "window")):
+            app_to_quit = goal_lower.split(" ", 1)[1].strip().title()
+            already_quit = any(h.get("action") == ActionType.RUN_COMMAND.value for h in history)
+            if not already_quit:
+                cmd = f'osascript -e \'tell application "{app_to_quit}" to quit\''
+                latency = (time.perf_counter() - start_t) * 1000.0
+                return FastDecisionResult(
+                    action=AgentAction(
+                        action=ActionType.RUN_COMMAND,
+                        command=cmd,
+                        thought=f"Closing application '{app_to_quit}' cleanly via AppleScript."
+                    ),
+                    confidence=0.98,
+                    is_fast_path=True,
+                    latency_ms=round(latency, 2),
+                    evidence="AppleScript app termination dispatched.",
+                    needs_review=False
+                )
+            else:
+                return FastDecisionResult(
+                    action=AgentAction(
+                        action=ActionType.TASK_COMPLETE,
+                        thought=f"Application '{app_to_quit}' closed."
+                    ),
+                    confidence=0.99,
+                    is_fast_path=True,
+                    latency_ms=1.0,
+                    evidence="App quit confirmed.",
+                    needs_review=False
+                )
+
         # Rule 1: High-confidence direct app activation
         app_match = re.search(r"(?:open|launch|switch to)\s+([a-zA-Z0-9\s]+?)(?:\s+(?:app|and|$))", goal_lower)
         if app_match:

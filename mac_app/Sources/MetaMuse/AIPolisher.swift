@@ -50,3 +50,4 @@ class AIPolisher {
         return text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
+

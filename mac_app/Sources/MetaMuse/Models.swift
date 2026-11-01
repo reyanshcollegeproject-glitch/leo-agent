@@ -55,3 +55,4 @@ enum AppAgentState: String {
     case completed = "COMPLETED"
     case stopped = "STOPPED"
 }
+
