@@ -1,0 +1,188 @@
+{
+  "run_id": "bench_os-01",
+  "total_steps": 4,
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": 1793544594.599555,
+      "action": {
+        "action": "launch_app",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": null,
+        "hotkey": null,
+        "app_name": "Calculator",
+        "command": null,
+        "scroll_amount": null,
+        "seconds": null,
+        "thought": "Launching Calculator application.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "launch_app",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": null,
+          "hotkey": null,
+          "app_name": "Calculator",
+          "command": null,
+          "scroll_amount": null,
+          "seconds": null,
+          "thought": "Launching Calculator application.",
+          "expected_outcome": null
+        },
+        "message": "Launched application: Calculator (success=True)",
+        "visual_change_detected": false,
+        "details": {
+          "execution_time_seconds": 0.603
+        }
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Launching Calculator application.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_001_raw.png",
+      "annotated_filename": "step_001_annotated.png"
+    },
+    {
+      "step_number": 2,
+      "timestamp": 1793544596.071118,
+      "action": {
+        "action": "wait",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": null,
+        "hotkey": null,
+        "app_name": null,
+        "command": null,
+        "scroll_amount": null,
+        "seconds": 0.5,
+        "thought": "Waiting for Calculator window to render.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "wait",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": null,
+          "hotkey": null,
+          "app_name": null,
+          "command": null,
+          "scroll_amount": null,
+          "seconds": 0.5,
+          "thought": "Waiting for Calculator window to render.",
+          "expected_outcome": null
+        },
+        "message": "Waited 0.5s",
+        "visual_change_detected": false,
+        "details": {
+          "execution_time_seconds": 0.505
+        }
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Waiting for Calculator window to render.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_002_raw.png",
+      "annotated_filename": "step_002_annotated.png"
+    },
+    {
+      "step_number": 3,
+      "timestamp": 1793544597.389426,
+      "action": {
+        "action": "type_text",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": "42*15=",
+        "hotkey": null,
+        "app_name": null,
+        "command": null,
+        "scroll_amount": null,
+        "seconds": null,
+        "thought": "Input arithmetic equation.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "type_text",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": "42*15=",
+          "hotkey": null,
+          "app_name": null,
+          "command": null,
+          "scroll_amount": null,
+          "seconds": null,
+          "thought": "Input arithmetic equation.",
+          "expected_outcome": null
+        },
+        "message": "Typed text: '42*15='",
+        "visual_change_detected": false,
+        "details": {
+          "execution_time_seconds": 0.36
+        }
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Input arithmetic equation.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_003_raw.png",
+      "annotated_filename": "step_003_annotated.png"
+    },
+    {
+      "step_number": 4,
+      "timestamp": 1793544597.5038872,
+      "action": {
+        "action": "task_complete",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": null,
+        "hotkey": null,
+        "app_name": null,
+        "command": null,
+        "scroll_amount": null,
+        "seconds": null,
+        "thought": "Calculation entered successfully.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "task_complete",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": null,
+          "hotkey": null,
+          "app_name": null,
+          "command": null,
+          "scroll_amount": null,
+          "seconds": null,
+          "thought": "Calculation entered successfully.",
+          "expected_outcome": null
+        },
+        "message": "Calculation entered successfully.",
+        "visual_change_detected": false,
+        "details": {}
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Calculation entered successfully.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_004_raw.png",
+      "annotated_filename": "step_004_annotated.png"
+    }
+  ]
+}

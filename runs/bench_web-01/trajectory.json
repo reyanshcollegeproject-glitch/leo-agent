@@ -1,0 +1,188 @@
+{
+  "run_id": "bench_web-01",
+  "total_steps": 4,
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": 1793544604.5226932,
+      "action": {
+        "action": "launch_app",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": null,
+        "hotkey": null,
+        "app_name": "Safari",
+        "command": null,
+        "scroll_amount": null,
+        "seconds": null,
+        "thought": "Opening Safari web browser.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "launch_app",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": null,
+          "hotkey": null,
+          "app_name": "Safari",
+          "command": null,
+          "scroll_amount": null,
+          "seconds": null,
+          "thought": "Opening Safari web browser.",
+          "expected_outcome": null
+        },
+        "message": "Launched application: Safari (success=True)",
+        "visual_change_detected": false,
+        "details": {
+          "execution_time_seconds": 0.672
+        }
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Opening Safari web browser.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_001_raw.png",
+      "annotated_filename": "step_001_annotated.png"
+    },
+    {
+      "step_number": 2,
+      "timestamp": 1793544605.5654268,
+      "action": {
+        "action": "press_hotkey",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": null,
+        "hotkey": "cmd+l",
+        "app_name": null,
+        "command": null,
+        "scroll_amount": null,
+        "seconds": null,
+        "thought": "Focus URL address bar.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "press_hotkey",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": null,
+          "hotkey": "cmd+l",
+          "app_name": null,
+          "command": null,
+          "scroll_amount": null,
+          "seconds": null,
+          "thought": "Focus URL address bar.",
+          "expected_outcome": null
+        },
+        "message": "Pressed hotkey: cmd+l",
+        "visual_change_detected": false,
+        "details": {
+          "execution_time_seconds": 0.104
+        }
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Focus URL address bar.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_002_raw.png",
+      "annotated_filename": "step_002_annotated.png"
+    },
+    {
+      "step_number": 3,
+      "timestamp": 1793544606.773937,
+      "action": {
+        "action": "type_text",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": "Meta AI Muse\n",
+        "hotkey": null,
+        "app_name": null,
+        "command": null,
+        "scroll_amount": null,
+        "seconds": null,
+        "thought": "Submit search query.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "type_text",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": "Meta AI Muse\n",
+          "hotkey": null,
+          "app_name": null,
+          "command": null,
+          "scroll_amount": null,
+          "seconds": null,
+          "thought": "Submit search query.",
+          "expected_outcome": null
+        },
+        "message": "Typed text: 'Meta AI Muse\n'",
+        "visual_change_detected": false,
+        "details": {
+          "execution_time_seconds": 0.255
+        }
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Submit search query.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_003_raw.png",
+      "annotated_filename": "step_003_annotated.png"
+    },
+    {
+      "step_number": 4,
+      "timestamp": 1793544606.887975,
+      "action": {
+        "action": "task_complete",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": null,
+        "hotkey": null,
+        "app_name": null,
+        "command": null,
+        "scroll_amount": null,
+        "seconds": null,
+        "thought": "Browser navigated and search executed.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "task_complete",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": null,
+          "hotkey": null,
+          "app_name": null,
+          "command": null,
+          "scroll_amount": null,
+          "seconds": null,
+          "thought": "Browser navigated and search executed.",
+          "expected_outcome": null
+        },
+        "message": "Browser navigated and search executed.",
+        "visual_change_detected": false,
+        "details": {}
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Browser navigated and search executed.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_004_raw.png",
+      "annotated_filename": "step_004_annotated.png"
+    }
+  ]
+}

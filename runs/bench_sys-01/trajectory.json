@@ -1,0 +1,142 @@
+{
+  "run_id": "bench_sys-01",
+  "total_steps": 3,
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": 1793544607.8758771,
+      "action": {
+        "action": "write_clipboard",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": "SYSTEM_OK: CPU 12% | RAM 4.2GB",
+        "hotkey": null,
+        "app_name": null,
+        "command": null,
+        "scroll_amount": null,
+        "seconds": null,
+        "thought": "Write status to clipboard.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "write_clipboard",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": "SYSTEM_OK: CPU 12% | RAM 4.2GB",
+          "hotkey": null,
+          "app_name": null,
+          "command": null,
+          "scroll_amount": null,
+          "seconds": null,
+          "thought": "Write status to clipboard.",
+          "expected_outcome": null
+        },
+        "message": "Wrote 30 characters to clipboard",
+        "visual_change_detected": false,
+        "details": {
+          "execution_time_seconds": 0.013
+        }
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Write status to clipboard.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_001_raw.png",
+      "annotated_filename": "step_001_annotated.png"
+    },
+    {
+      "step_number": 2,
+      "timestamp": 1793544608.848906,
+      "action": {
+        "action": "read_clipboard",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": null,
+        "hotkey": null,
+        "app_name": null,
+        "command": null,
+        "scroll_amount": null,
+        "seconds": null,
+        "thought": "Verify clipboard contents.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "read_clipboard",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": null,
+          "hotkey": null,
+          "app_name": null,
+          "command": null,
+          "scroll_amount": null,
+          "seconds": null,
+          "thought": "Verify clipboard contents.",
+          "expected_outcome": null
+        },
+        "message": "Read clipboard: SYSTEM_OK: CPU 12% | RAM 4.2GB...",
+        "visual_change_detected": false,
+        "details": {
+          "clipboard": "SYSTEM_OK: CPU 12% | RAM 4.2GB"
+        }
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Verify clipboard contents.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_002_raw.png",
+      "annotated_filename": "step_002_annotated.png"
+    },
+    {
+      "step_number": 3,
+      "timestamp": 1793544608.964223,
+      "action": {
+        "action": "task_complete",
+        "x": null,
+        "y": null,
+        "element_id": null,
+        "text": null,
+        "hotkey": null,
+        "app_name": null,
+        "command": null,
+        "scroll_amount": null,
+        "seconds": null,
+        "thought": "Clipboard verification passed.",
+        "expected_outcome": null
+      },
+      "result": {
+        "success": true,
+        "action": {
+          "action": "task_complete",
+          "x": null,
+          "y": null,
+          "element_id": null,
+          "text": null,
+          "hotkey": null,
+          "app_name": null,
+          "command": null,
+          "scroll_amount": null,
+          "seconds": null,
+          "thought": "Clipboard verification passed.",
+          "expected_outcome": null
+        },
+        "message": "Clipboard verification passed.",
+        "visual_change_detected": false,
+        "details": {}
+      },
+      "visual_change": false,
+      "diff_ratio": 0.0,
+      "thought": "Clipboard verification passed.",
+      "expected_outcome": null,
+      "screenshot_filename": "step_003_raw.png",
+      "annotated_filename": "step_003_annotated.png"
+    }
+  ]
+}
