@@ -203,6 +203,32 @@ def gui_alias(
     desktop_command(mock=mock)
 
 
+@app.command("live")
+def live_command(
+    threshold: float = typer.Option(350.0, "--threshold", "-t", help="Microphone Voice Activity Detection sensitivity threshold"),
+    silence: float = typer.Option(0.55, "--silence", "-s", help="Silence duration (seconds) before triggering intent")
+):
+    """
+    Launch Full-Duplex Real-Time Conversational Voice Assistant (Zero turn-based lag, continuous listening).
+    """
+    from muse_agent.voice.realtime import RealtimeVoiceAssistant
+    assistant = RealtimeVoiceAssistant(energy_threshold=threshold, silence_timeout_seconds=silence)
+    try:
+        assistant.start_live_loop()
+    except KeyboardInterrupt:
+        assistant.stop()
+        console.print("\n[bold yellow]Real-Time Voice Assistant stopped.[/bold yellow]")
+
+
+@app.command("realtime")
+def realtime_alias(
+    threshold: float = typer.Option(350.0, "--threshold", "-t", help="Microphone Voice Activity Detection sensitivity threshold"),
+    silence: float = typer.Option(0.55, "--silence", "-s", help="Silence duration (seconds) before triggering intent")
+):
+    """Alias for 'live': Full-Duplex Real-Time Conversational Voice Assistant."""
+    live_command(threshold=threshold, silence=silence)
+
+
 @app.command()
 def serve(
     host: str = typer.Option("127.0.0.1", "--host", "-h", help="Host address to bind"),
