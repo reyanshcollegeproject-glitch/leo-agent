@@ -8,15 +8,22 @@ class AgentBridge: ObservableObject {
     @Published var state: AppAgentState = .idle
     @Published var hasScreenPermission: Bool = true
     @Published var voiceFeedbackEnabled: Bool = true
-    @Published var isListeningVoice: Bool = false
 
+    // Voice State from Flow Widget
+    @Published var isRecordingVoice: Bool = false
+    @Published var audioLevel: Float = 0.0
+    @Published var liveTranscript: String = ""
+    @Published var statusText: String = "Click Mic or ⌥Space to Talk"
+
+    private let speechManager = SpeechManager()
+    private let polisher = AIPolisher()
     private var activeProcess: Process?
     private let workspacePath: String
 
     init() {
-        // Resolve path to auto agent repo
         self.workspacePath = "/Users/reyansh/Desktop/contribute/auto agent"
         checkPermissions()
+        setupSpeechCallbacks()
         seedWelcomeMessage()
     }
 
@@ -31,49 +38,114 @@ class AgentBridge: ObservableObject {
         }
     }
 
+    private func setupSpeechCallbacks() {
+        speechManager.onAudioLevelChange = { [weak self] level in
+            Task { @MainActor in
+                self?.audioLevel = level
+            }
+        }
+
+        speechManager.onTranscriptUpdate = { [weak self] text in
+            Task { @MainActor in
+                self?.liveTranscript = text
+                if !text.isEmpty {
+                    self?.statusText = text
+                }
+            }
+        }
+    }
+
     private func seedWelcomeMessage() {
         let welcome = ChatMessage(
             sender: .assistant,
-            text: "Hello! I am Meta Muse, your 24/7 autonomous macOS assistant. You can chat or talk to me to control apps, play music, automate tasks, and navigate your Mac.",
+            text: "Hello! I am Meta Muse, your 24/7 autonomous macOS assistant. You can chat or press [⌥ Space] to speak instructions like 'open chrome and play weekend song'.",
             timestamp: Date(),
             steps: []
         )
         messages.append(welcome)
     }
 
+    // MARK: - Voice Toggle (Flow Widget Capsule Integration)
+    func toggleVoiceRecording() {
+        if isRecordingVoice {
+            stopVoiceAndExecute()
+        } else {
+            startVoiceRecording()
+        }
+    }
+
+    private func startVoiceRecording() {
+        guard !isRecordingVoice else { return }
+        self.isRecordingVoice = true
+        self.state = .listening
+        self.statusText = "Listening (speak now)..."
+        self.liveTranscript = ""
+
+        speechManager.startRecording { [weak self] success, error in
+            Task { @MainActor in
+                if !success {
+                    self?.isRecordingVoice = false
+                    self?.state = .idle
+                    self?.statusText = error ?? "Microphone access needed"
+                }
+            }
+        }
+    }
+
+    private func stopVoiceAndExecute() {
+        self.isRecordingVoice = false
+        self.audioLevel = 0.0
+
+        let raw = speechManager.stopRecording()
+        let clean = polisher.polish(rawTranscript: raw)
+
+        if clean.isEmpty {
+            self.state = .idle
+            self.statusText = "No speech detected"
+            Task {
+                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                if self.state == .idle {
+                    self.statusText = "Click Mic or ⌥Space to Talk"
+                }
+            }
+            return
+        }
+
+        self.statusText = "✨ \(clean)"
+        executeGoal(clean)
+    }
+
+    // MARK: - Execution Engine
     func executeGoal(_ goal: String) {
         let trimmed = goal.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
-        // 1. Append user message to chat
+        // 1. Add user message
         let userMsg = ChatMessage(sender: .user, text: trimmed)
         messages.append(userMsg)
 
-        // 2. Append assistant placeholder message
+        // 2. Add assistant placeholder
         let assistantMsgId = UUID()
         let assistantMsg = ChatMessage(
             id: assistantMsgId,
             sender: .assistant,
-            text: "Analyzing goal and planning execution...",
+            text: "Analyzing goal and executing across macOS...",
             steps: [],
             isExecuting: true
         )
         messages.append(assistantMsg)
         self.state = .running
+        self.statusText = "⚡ Executing: \(trimmed)..."
 
-        // 3. Find Python executable in workspace venv
         let pythonPath = "\(workspacePath)/venv/bin/python"
         guard FileManager.default.fileExists(atPath: pythonPath) else {
-            updateAssistantMessage(
-                id: assistantMsgId,
-                text: "Error: Python virtual environment not found at \(pythonPath)",
-                isExecuting: false
-            )
+            updateAssistantMessage(id: assistantMsgId, text: "Error: Virtual environment not found.", isExecuting: false)
             self.state = .idle
+            self.statusText = "Execution failed"
             return
         }
 
-        // 4. Launch asynchronous CLI process with --json-stream
+        // 3. Launch process with --json-stream
         Task.detached(priority: .userInitiated) { [weak self, workspacePath] in
             let process = Process()
             process.executableURL = URL(fileURLWithPath: pythonPath)
@@ -107,7 +179,6 @@ class AgentBridge: ObservableObject {
                     }
                     buffer.append(chunk)
 
-                    // Process complete newline-delimited lines
                     while let newlineIndex = buffer.firstIndex(of: UInt8(ascii: "\n")) {
                         let lineData = buffer.subdata(in: 0..<newlineIndex)
                         buffer.removeSubrange(0...newlineIndex)
@@ -125,12 +196,9 @@ class AgentBridge: ObservableObject {
                 }
             } catch {
                 await MainActor.run {
-                    self?.updateAssistantMessage(
-                        id: assistantMsgId,
-                        text: "Execution error: \(error.localizedDescription)",
-                        isExecuting: false
-                    )
+                    self?.updateAssistantMessage(id: assistantMsgId, text: "Execution error: \(error.localizedDescription)", isExecuting: false)
                     self?.state = .idle
+                    self?.statusText = "Error during execution"
                 }
             }
         }
@@ -171,6 +239,7 @@ class AgentBridge: ObservableObject {
                     )
                 }
             }
+            self.statusText = "[#\(stepNum)] \(action)"
         } else if type == "finished" {
             let success = json["success"] as? Bool ?? false
             let elapsed = json["elapsed_seconds"] as? Double ?? 0.0
@@ -178,7 +247,7 @@ class AgentBridge: ObservableObject {
 
             let completionText = success
                 ? "Task completed successfully in \(String(format: "%.1f", elapsed))s across \(totalSteps) steps."
-                : "Task terminated or exceeded step limit."
+                : "Task finished."
 
             if let idx = messages.firstIndex(where: { $0.id == msgId }) {
                 messages[idx] = ChatMessage(
@@ -191,6 +260,7 @@ class AgentBridge: ObservableObject {
                 )
             }
 
+            self.statusText = success ? "✅ Task Completed" : "Task Finished"
             if voiceFeedbackEnabled && success {
                 speakText("Task completed.")
             }
@@ -204,6 +274,12 @@ class AgentBridge: ObservableObject {
             var updated = messages[idx]
             updated.isExecuting = false
             messages[idx] = updated
+        }
+        Task {
+            try? await Task.sleep(nanoseconds: 2_500_000_000)
+            if self.state == .idle {
+                self.statusText = "Click Mic or ⌥Space to Talk"
+            }
         }
     }
 
@@ -226,19 +302,7 @@ class AgentBridge: ObservableObject {
             activeProcess = nil
         }
         self.state = .stopped
-        if let lastIdx = messages.indices.last, messages[lastIdx].isExecuting {
-            var updated = messages[lastIdx]
-            updated.isExecuting = false
-            updated = ChatMessage(
-                id: updated.id,
-                sender: .assistant,
-                text: "Emergency stop triggered by user.",
-                timestamp: updated.timestamp,
-                steps: updated.steps,
-                isExecuting: false
-            )
-            messages[lastIdx] = updated
-        }
+        self.statusText = "🛑 Emergency Stop Triggered"
         speakText("Agent stopped.")
     }
 
@@ -249,44 +313,6 @@ class AgentBridge: ObservableObject {
             p.executableURL = URL(fileURLWithPath: "/usr/bin/say")
             p.arguments = ["-v", "Samantha", text]
             try? p.run()
-        }
-    }
-
-    func startVoiceListening() {
-        guard !isListeningVoice else { return }
-        self.isListeningVoice = true
-        self.state = .listening
-        speakText("Listening.")
-
-        // Invoke python voice listener
-        let pythonPath = "\(workspacePath)/venv/bin/python"
-        Task.detached(priority: .userInitiated) { [weak self, pythonPath] in
-            let p = Process()
-            p.executableURL = URL(fileURLWithPath: pythonPath)
-            p.arguments = ["-c", """
-from muse_agent.voice.engine import VoiceEngine
-v = VoiceEngine()
-txt = v.listen_and_transcribe(duration_seconds=3.5)
-if txt:
-    print(txt)
-"""]
-            let pipe = Pipe()
-            p.standardOutput = pipe
-            try? p.run()
-            p.waitUntilExit()
-
-            let data = pipe.fileHandleForReading.readDataToEndOfFile()
-            let transcribed = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
-
-            await MainActor.run {
-                self?.isListeningVoice = false
-                self?.state = .idle
-                if let query = transcribed, !query.isEmpty {
-                    self?.executeGoal(query)
-                } else {
-                    self?.speakText("I didn't catch that. Please try again.")
-                }
-            }
         }
     }
 }

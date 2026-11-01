@@ -1,8 +1,10 @@
 import SwiftUI
+import AppKit
 
 struct MainView: View {
     @StateObject private var bridge = AgentBridge()
     @State private var inputText: String = ""
+    @State private var isExpanded: Bool = true
     @State private var isPinnedOnTop: Bool = true
 
     let suggestions = [
@@ -18,115 +20,146 @@ struct MainView: View {
             Theme.bgBlack.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // 1. Header Bar
-                headerBar
+                // 1. Flow Voice Capsule Bar (Always Visible)
+                capsuleBar
 
-                // 2. Permission Banner (if macOS Screen Recording is needed)
-                if !bridge.hasScreenPermission {
-                    permissionBanner
+                if isExpanded {
+                    // 2. Permission Banner (if needed)
+                    if !bridge.hasScreenPermission {
+                        permissionBanner
+                    }
+
+                    // 3. Conversational Message Stream
+                    chatScrollView
+
+                    // 4. Quick Suggestion Pills
+                    suggestionBar
+
+                    // 5. Bottom Interactive Text Input Section
+                    inputSection
                 }
-
-                // 3. Conversational Message Stream
-                chatScrollView
-
-                // 4. Quick Suggestion Pills
-                suggestionBar
-
-                // 5. Bottom Interactive Input Section
-                inputSection
             }
         }
-        .frame(minWidth: 580, idealWidth: 640, minHeight: 640, idealHeight: 720)
+        .frame(
+            minWidth: isExpanded ? 580 : 480,
+            idealWidth: isExpanded ? 640 : 480,
+            maxWidth: isExpanded ? 720 : 480,
+            minHeight: isExpanded ? 600 : 58,
+            idealHeight: isExpanded ? 680 : 58,
+            maxHeight: isExpanded ? 800 : 58
+        )
+        .clipShape(RoundedRectangle(cornerRadius: isExpanded ? 16 : 29))
+        .overlay(
+            RoundedRectangle(cornerRadius: isExpanded ? 16 : 29)
+                .stroke(Theme.borderGraphite, lineWidth: 1)
+        )
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: isExpanded)
         .onAppear {
             setWindowTopmost(isPinnedOnTop)
         }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("TriggerVoiceDictation"))) { _ in
+            bridge.toggleVoiceRecording()
+        }
     }
 
-    // MARK: - Header Bar
-    private var headerBar: some View {
+    // MARK: - Flow Voice Capsule Bar
+    private var capsuleBar: some View {
         HStack(spacing: 12) {
-            // App Icon & Title
-            HStack(spacing: 8) {
+            // 1. Circular Mic Button (Flow Voice Trigger)
+            Button(action: {
+                bridge.toggleVoiceRecording()
+            }) {
                 ZStack {
                     Circle()
-                        .fill(Theme.appleBlueSoft)
-                        .frame(width: 32, height: 32)
-                    Image(systemName: "bolt.fill")
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(Theme.appleBlue)
-                }
+                        .fill(bridge.isRecordingVoice ? Theme.textWhite : Theme.appleBlue)
+                        .frame(width: 40, height: 40)
+                        .shadow(color: Theme.appleBlue.opacity(0.3), radius: 6, x: 0, y: 2)
 
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("META MUSE")
-                        .font(.system(size: 13, weight: .heavy, design: .rounded))
-                        .foregroundColor(Theme.textWhite)
-                    Text("24/7 Autonomous macOS Desktop Agent")
-                        .font(.system(size: 10, weight: .medium))
+                    Image(systemName: bridge.isRecordingVoice ? "stop.fill" : "mic.fill")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(bridge.isRecordingVoice ? Theme.appleBlue : .white)
+                }
+            }
+            .buttonStyle(.plain)
+            .help("Click or Press [⌥ Space] to Speak Instructions")
+
+            // 2. Status & Live Speech Label
+            VStack(alignment: .leading, spacing: 2) {
+                Text(bridge.statusText)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(Theme.textWhite)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(stateColor)
+                        .frame(width: 6, height: 6)
+
+                    Text(bridge.state.rawValue)
+                        .font(.system(size: 9, weight: .bold))
                         .foregroundColor(Theme.textSecondary)
+
+                    Text("• Meta Muse")
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundColor(Theme.textMuted)
                 }
             }
 
             Spacer()
 
-            // State Badge
-            HStack(spacing: 6) {
-                Circle()
-                    .fill(stateBadgeColor)
-                    .frame(width: 7, height: 7)
-                Text(bridge.state.rawValue)
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundColor(Theme.textWhite)
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
-            .background(Theme.cardCharcoal)
-            .cornerRadius(12)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(Theme.borderGraphite, lineWidth: 1)
+            // 3. 7-Bar Dynamic RMS Audio Waveform
+            WaveformView(
+                audioLevel: bridge.audioLevel,
+                isRecording: bridge.isRecordingVoice,
+                isExecuting: bridge.state == .running
             )
+            .frame(width: 60)
 
-            // Voice Feedback Toggle
+            // 4. Voice Audio Speaker Toggle
             Button(action: {
                 bridge.voiceFeedbackEnabled.toggle()
             }) {
                 Image(systemName: bridge.voiceFeedbackEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 12))
                     .foregroundColor(bridge.voiceFeedbackEnabled ? Theme.appleBlue : Theme.textMuted)
-                    .padding(7)
+                    .padding(6)
                     .background(Theme.cardCharcoal)
                     .cornerRadius(8)
             }
             .buttonStyle(.plain)
-            .help("Toggle Voice Audio Feedback")
+            .help("Toggle Voice Audio Speech")
 
-            // Pin on Top Toggle
+            // 5. Expand / Collapse Drawer Button
             Button(action: {
-                isPinnedOnTop.toggle()
-                setWindowTopmost(isPinnedOnTop)
+                withAnimation {
+                    isExpanded.toggle()
+                    adjustWindowSize(expanded: isExpanded)
+                }
             }) {
-                Image(systemName: isPinnedOnTop ? "pin.fill" : "pin")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(isPinnedOnTop ? Theme.appleBlue : Theme.textMuted)
-                    .padding(7)
-                    .background(Theme.cardCharcoal)
-                    .cornerRadius(8)
+                ZStack {
+                    Circle()
+                        .fill(Theme.cardCharcoal)
+                        .frame(width: 28, height: 28)
+                        .overlay(
+                            Circle()
+                                .stroke(Theme.borderGraphite, lineWidth: 1)
+                        )
+
+                    Image(systemName: isExpanded ? "chevron.down" : "chevron.up")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(Theme.appleBlue)
+                }
             }
             .buttonStyle(.plain)
-            .help("Pin window on top")
+            .help(isExpanded ? "Collapse to Floating Capsule" : "Expand Full Agent View")
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(Theme.cardCharcoal.opacity(0.85))
-        .overlay(
-            Rectangle()
-                .frame(height: 1)
-                .foregroundColor(Theme.borderSubtle),
-            alignment: .bottom
-        )
+        .padding(.horizontal, 14)
+        .padding(.vertical, 9)
+        .background(Theme.cardCharcoal.opacity(0.92))
     }
 
-    private var stateBadgeColor: Color {
+    private var stateColor: Color {
         switch bridge.state {
         case .idle: return Theme.appleBlue
         case .running: return Theme.appleBlueHover
@@ -142,9 +175,9 @@ struct MainView: View {
         HStack(spacing: 10) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(Theme.appleBlue)
-                .font(.system(size: 13))
+                .font(.system(size: 12))
 
-            Text("macOS Screen Recording permission enables vision. Native commands remain active.")
+            Text("macOS Screen Recording permission enables vision. Direct commands active.")
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(Theme.textSecondary)
 
@@ -162,7 +195,7 @@ struct MainView: View {
             .buttonStyle(.plain)
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 8)
+        .padding(.vertical, 7)
         .background(Theme.cardCharcoal)
         .overlay(
             Rectangle()
@@ -176,14 +209,14 @@ struct MainView: View {
     private var chatScrollView: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack(spacing: 14) {
+                LazyVStack(spacing: 12) {
                     ForEach(bridge.messages) { message in
                         MessageRow(message: message)
                             .id(message.id)
                     }
                 }
                 .padding(.horizontal, 16)
-                .padding(.vertical, 14)
+                .padding(.vertical, 12)
             }
             .onChange(of: bridge.messages.count) { _ in
                 if let lastId = bridge.messages.last?.id {
@@ -228,36 +261,14 @@ struct MainView: View {
         }
     }
 
-    // MARK: - Input Section
+    // MARK: - Bottom Input Section
     private var inputSection: some View {
         VStack(spacing: 0) {
             Divider()
                 .background(Theme.borderSubtle)
 
             HStack(spacing: 10) {
-                // Voice / Mic Button
-                Button(action: {
-                    bridge.startVoiceListening()
-                }) {
-                    ZStack {
-                        Circle()
-                            .fill(bridge.isListeningVoice ? Theme.alertRed : Theme.cardCharcoal)
-                            .frame(width: 36, height: 36)
-                            .overlay(
-                                Circle()
-                                    .stroke(bridge.isListeningVoice ? Theme.alertRed : Theme.borderGraphite, lineWidth: 1)
-                            )
-
-                        Image(systemName: bridge.isListeningVoice ? "waveform" : "mic.fill")
-                            .font(.system(size: 14))
-                            .foregroundColor(bridge.isListeningVoice ? .white : Theme.appleBlue)
-                    }
-                }
-                .buttonStyle(.plain)
-                .help("Talk with Voice (Microphone)")
-
-                // Main Text Input Field
-                TextField("Ask anything or give a desktop goal (Press Return)...", text: $inputText)
+                TextField("Type command or goal (Press Return)...", text: $inputText)
                     .textFieldStyle(.plain)
                     .font(.system(size: 13))
                     .foregroundColor(Theme.textWhite)
@@ -273,7 +284,6 @@ struct MainView: View {
                         submitCurrentGoal()
                     }
 
-                // Emergency Stop Button (when running)
                 if bridge.state == .running {
                     Button(action: {
                         bridge.emergencyStop()
@@ -286,7 +296,6 @@ struct MainView: View {
                     .help("Emergency Stop")
                 }
 
-                // Send Button
                 Button(action: {
                     submitCurrentGoal()
                 }) {
@@ -305,7 +314,7 @@ struct MainView: View {
                 .opacity(inputText.trimmingCharacters(in: .whitespaces).isEmpty ? 0.4 : 1.0)
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.vertical, 10)
             .background(Theme.bgBlack)
         }
     }
@@ -320,6 +329,18 @@ struct MainView: View {
     private func setWindowTopmost(_ top: Bool) {
         if let window = NSApplication.shared.windows.first {
             window.level = top ? .floating : .normal
+        }
+    }
+
+    private func adjustWindowSize(expanded: Bool) {
+        if let window = NSApplication.shared.windows.first {
+            var frame = window.frame
+            let targetHeight: CGFloat = expanded ? 680 : 58
+            let targetWidth: CGFloat = expanded ? 640 : 480
+            frame.origin.y += (frame.size.height - targetHeight)
+            frame.size.height = targetHeight
+            frame.size.width = targetWidth
+            window.setFrame(frame, display: true, animate: true)
         }
     }
 }
@@ -341,20 +362,17 @@ struct MessageRow: View {
     }
 
     private var userBubble: some View {
-        VStack(alignment: .trailing, spacing: 4) {
-            Text(message.text)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(Theme.textWhite)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .background(Theme.appleBlue)
-                .cornerRadius(14)
-        }
+        Text(message.text)
+            .font(.system(size: 13, weight: .medium))
+            .foregroundColor(Theme.textWhite)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 9)
+            .background(Theme.appleBlue)
+            .cornerRadius(14)
     }
 
     private var assistantBubble: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Header tag
             HStack(spacing: 6) {
                 Image(systemName: "bolt.circle.fill")
                     .foregroundColor(Theme.appleBlue)
@@ -370,15 +388,13 @@ struct MessageRow: View {
                 }
             }
 
-            // Thought / Answer text
             Text(message.text)
                 .font(.system(size: 13))
                 .foregroundColor(Theme.textWhite)
                 .lineSpacing(3)
 
-            // Step Action Badges
             if !message.steps.isEmpty {
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 5) {
                     ForEach(message.steps) { step in
                         HStack(alignment: .center, spacing: 8) {
                             Text("Step #\(step.id)")
@@ -418,7 +434,7 @@ struct MessageRow: View {
                 .padding(.top, 4)
             }
         }
-        .padding(14)
+        .padding(13)
         .background(Theme.cardCharcoal)
         .cornerRadius(12)
         .overlay(

@@ -11,14 +11,16 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0</string>
+    <string>2.0</string>
     <key>CFBundleVersion</key>
-    <string>1</string>
+    <string>2</string>
     <key>LSMinimumSystemVersion</key>
     <string>13.0</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Meta Muse needs microphone access to listen to your voice commands.</string>
+    <string>Meta Muse requires microphone access for Flow Voice Dictation and audio waveform visualization.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Meta Muse requires speech recognition to transcribe your voice commands into autonomous desktop actions.</string>
 </dict>
 </plist>
