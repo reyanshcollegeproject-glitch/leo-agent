@@ -1,2 +1,0 @@
-[console_scripts]
-muse-agent = muse_agent.cli.main:main
