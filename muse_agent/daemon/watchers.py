@@ -77,3 +77,4 @@ class SystemWatcher:
         if snap.user_idle_seconds < self.idle_threshold_seconds:
             return False
         return True
+

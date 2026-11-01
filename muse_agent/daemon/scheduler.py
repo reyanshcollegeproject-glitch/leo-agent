@@ -66,3 +66,4 @@ class AutonomousScheduler:
                 logger.info(f"Enqueued scheduled job '{s['name']}' (Task #{task_id}). Next run: {datetime.fromtimestamp(next_run)}")
 
         return enqueued_ids
+

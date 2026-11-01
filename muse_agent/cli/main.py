@@ -123,6 +123,31 @@ def bench(
     asyncio.run(runner.run_suite())
 
 
+@app.command("desktop")
+def desktop_command(
+    mock: bool = typer.Option(False, "--mock", help="Run with offline simulation model")
+):
+    """
+    Launch native macOS Desktop Control Center & Floating HUD (No browser/web server).
+    """
+    from muse_agent.desktop.hud import launch_desktop_hud
+    console.print(Panel(
+        f"[bold cyan]Launching Native macOS Desktop Control HUD[/bold cyan]\n"
+        f"Mode: [green]Pure Desktop Native Window (No Browser)[/green]\n"
+        f"Model: [magenta]{'Offline Mock' if mock else settings.muse_model_name}[/magenta]",
+        border_style="cyan"
+    ))
+    launch_desktop_hud(mock=mock)
+
+
+@app.command("gui")
+def gui_alias(
+    mock: bool = typer.Option(False, "--mock", help="Run with offline simulation model")
+):
+    """Alias for 'desktop': Launch native macOS Desktop Control Center."""
+    desktop_command(mock=mock)
+
+
 @app.command()
 def serve(
     host: str = typer.Option("127.0.0.1", "--host", "-h", help="Host address to bind"),

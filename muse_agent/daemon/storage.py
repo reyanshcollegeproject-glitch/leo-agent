@@ -263,3 +263,4 @@ class DaemonStorage:
         with self._get_conn() as conn:
             row = conn.execute("SELECT * FROM system_heartbeat ORDER BY id DESC LIMIT 1").fetchone()
             return dict(row) if row else None
+

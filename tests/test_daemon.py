@@ -84,3 +84,4 @@ def test_launchd_plist_generation():
     assert plist_dict["Label"] == LaunchdManager.SERVICE_LABEL
     assert plist_dict["RunAtLoad"] is True
     assert "KeepAlive" in plist_dict
+
