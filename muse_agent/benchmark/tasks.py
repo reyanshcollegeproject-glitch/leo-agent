@@ -154,3 +154,4 @@ def get_standard_benchmark_suite() -> List[BenchmarkTask]:
             ]
         )
     ]
+

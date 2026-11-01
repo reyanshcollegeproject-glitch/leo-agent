@@ -102,3 +102,4 @@ class OpenAICompatibleModel(BaseVisionModel):
 
         parsed = json.loads(cleaned_json)
         return AgentAction(**parsed)
+

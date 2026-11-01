@@ -99,3 +99,4 @@ class VisualVerifier:
             is_near_action=is_near,
             description=desc
         )
+

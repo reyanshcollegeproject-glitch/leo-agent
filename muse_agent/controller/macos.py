@@ -98,3 +98,4 @@ class MacOSController:
         """Show native macOS notification."""
         script = f'display notification "{message}" with title "{title}"'
         self.run_applescript(script)
+

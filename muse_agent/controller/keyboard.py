@@ -104,3 +104,4 @@ class KeyboardController:
         norm_key = self._normalize_key(key)
         if PYAUTOGUI_AVAILABLE:
             pyautogui.keyUp(norm_key)
+

@@ -104,3 +104,4 @@ class TrajectoryMemory:
                 "visual_change": s.visual_change
             })
         return summary
+

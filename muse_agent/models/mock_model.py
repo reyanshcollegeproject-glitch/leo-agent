@@ -38,3 +38,4 @@ class MockMuseModel(BaseVisionModel):
             action=ActionType.TASK_COMPLETE,
             thought="Offline simulation complete: Goal fulfilled successfully."
         )
+

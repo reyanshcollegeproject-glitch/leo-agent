@@ -93,3 +93,4 @@ class BenchmarkCollector:
             safety_interceptions_valid=safety_passed,
             task_metrics=self.metrics
         )
+

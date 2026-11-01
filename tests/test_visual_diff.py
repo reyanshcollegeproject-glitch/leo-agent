@@ -22,3 +22,4 @@ def test_visual_diff_with_change():
     assert res.has_changed
     assert res.diff_ratio > 0.05
     assert res.changed_bbox is not None
+

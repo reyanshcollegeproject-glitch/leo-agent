@@ -79,3 +79,4 @@ class HierarchicalPlanner:
             sub_goals[0].status = SubGoalStatus.IN_PROGRESS
 
         return ExecutionPlan(goal=goal, sub_goals=sub_goals)
+

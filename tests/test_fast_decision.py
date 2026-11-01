@@ -44,3 +44,4 @@ def test_fast_decision_fallback_to_deep_vision():
     )
     # Should be None so agent escalates to Meta Muse Vision
     assert res is None
+

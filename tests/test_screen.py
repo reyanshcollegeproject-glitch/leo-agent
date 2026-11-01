@@ -33,3 +33,4 @@ def test_capture_base64():
     assert isinstance(b64, str)
     assert len(b64) > 100
     assert img.width <= 800
+

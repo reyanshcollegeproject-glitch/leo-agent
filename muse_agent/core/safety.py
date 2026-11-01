@@ -98,3 +98,4 @@ class SentinelGuardrail:
             approved = self.confirmation_callback(action)
             if not approved:
                 raise SafetyViolationError(f"Command execution rejected by user: '{action.command}'")
+

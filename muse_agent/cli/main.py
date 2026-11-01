@@ -106,13 +106,18 @@ def run(
 
 @app.command()
 def bench(
-    mock: bool = typer.Option(True, "--mock/--live", help="Use deterministic mock model or live Meta Muse API"),
+    live: bool = typer.Option(True, "--live/--mock", help="Use live Meta Muse API or offline simulation"),
     output: str = typer.Option("benchmark_results", "--output", "-o", help="Output directory for reports")
 ):
     """
     Run the standardized benchmark suite to evaluate OS control and set new agent benchmarks.
     """
-    runner = BenchmarkRunner(use_mock=mock, output_dir=settings.benchmark_dir)
+    use_mock = not live
+    if live and not settings.muse_api_key:
+        console.print("[bold yellow]No MUSE_API_KEY detected in .env. Falling back to offline simulation.[/bold yellow]")
+        use_mock = True
+
+    runner = BenchmarkRunner(use_mock=use_mock, output_dir=settings.benchmark_dir)
     asyncio.run(runner.run_suite())
 
 
@@ -165,3 +170,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

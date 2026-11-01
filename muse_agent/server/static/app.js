@@ -211,3 +211,4 @@ btnStop.addEventListener('click', async () => {
 
 // Init
 connectWebSocket();
+

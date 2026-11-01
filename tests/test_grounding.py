@@ -57,3 +57,4 @@ def test_action_annotation():
     grounder = VisualGrounder()
     action_img = grounder.annotate_action(img, "click", 500, 500)
     assert action_img.size == img.size
+

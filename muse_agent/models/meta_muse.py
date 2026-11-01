@@ -129,3 +129,4 @@ class MetaMuseModel(BaseVisionModel):
                 seconds=1.0,
                 thought=f"Encountered parsing error, waiting before retry: {e}"
             )
+

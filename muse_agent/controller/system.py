@@ -197,3 +197,4 @@ class OSController:
                 message=f"Action execution failed: {e}",
                 details={"error": str(e)}
             )
+

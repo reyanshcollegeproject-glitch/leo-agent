@@ -31,3 +31,4 @@ def test_sentinel_emergency_stop():
     action = AgentAction(action=ActionType.CLICK, x=100, y=100)
     with pytest.raises(EmergencyStopError):
         sentinel.validate_action(action)
+

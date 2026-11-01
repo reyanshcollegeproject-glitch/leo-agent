@@ -25,15 +25,15 @@ class AgentConfig(BaseSettings):
         description="Provider identifier: 'meta_muse', 'openai', 'anthropic', or 'custom'"
     )
     muse_model_name: str = Field(
-        default="meta-muse-spark-1.3",
-        description="Meta AI Muse model version (e.g., meta-muse-spark-1.3, meta-muse-wonder, meta-muse-code)"
+        default="muse-spark-1.3",
+        description="Meta AI Muse model version (e.g., muse-spark-1.3, muse-wonder-1.0)"
     )
     muse_api_key: Optional[str] = Field(
         default=os.getenv("MUSE_API_KEY", ""),
         description="API Key for Meta Model API / Muse endpoint"
     )
     muse_endpoint: str = Field(
-        default=os.getenv("MUSE_ENDPOINT", "https://api.meta.ai/v1/models/muse"),
+        default=os.getenv("MUSE_ENDPOINT", "https://api.meta.ai/v1/chat/completions"),
         description="Base URL for Meta Muse API"
     )
     fallback_api_key: Optional[str] = Field(
@@ -118,3 +118,4 @@ class AgentConfig(BaseSettings):
 
 # Global configuration instance
 settings = AgentConfig()
+

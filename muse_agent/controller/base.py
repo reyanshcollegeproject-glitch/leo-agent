@@ -66,3 +66,4 @@ class ActionResult(BaseModel):
     message: str
     visual_change_detected: bool = False
     details: Dict[str, Any] = Field(default_factory=dict)
+

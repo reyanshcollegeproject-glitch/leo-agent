@@ -94,3 +94,4 @@ class MouseController:
             pos = pyautogui.position()
             return self.perceiver.logical_to_normalized(pos.x, pos.y)
         return (0, 0)
+

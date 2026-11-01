@@ -151,3 +151,4 @@ Safety is non-negotiable for autonomous laptop agents. The agent includes:
 ./venv/bin/pytest tests -v
 ```
 All tests verify screen capture, Set-of-Marks element detection, action controllers, Sentinel guardrails, and benchmark metrics.
+

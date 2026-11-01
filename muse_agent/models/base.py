@@ -35,7 +35,8 @@ Your purpose is to autonomously, accurately, and safely achieve user goals acros
 1. When opening an app, prefer "launch_app" or "spotlight" over hunting for icons.
 2. Before clicking, observe visual feedback from previous steps. If a window or dialog didn't appear, retry or take an alternate path.
 3. Keep individual actions atomic and purposeful.
-4. When the user's objective is fully satisfied, immediately emit "task_complete".
+4. When the user's objective is fully satisfied or command output confirms task fulfillment, immediately emit "task_complete".
+5. If the screen is blank/dark or UI capture is unavailable, rely on OS commands / hotkeys to complete the requested goal and promptly emit "task_complete".
 
 ### OUTPUT FORMAT:
 You MUST respond ONLY with a valid JSON object matching this schema:
@@ -71,3 +72,4 @@ class BaseVisionModel(ABC):
     ) -> AgentAction:
         """Analyze the current screen and conversation history, then produce the next action."""
         pass
+

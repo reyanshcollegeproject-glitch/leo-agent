@@ -16,3 +16,4 @@ async def test_benchmark_suite_runner(tmp_path: Path):
     assert res.success_rate_percent == 100.0
     assert (tmp_path / "report.md").exists()
     assert (tmp_path / "report.json").exists()
+

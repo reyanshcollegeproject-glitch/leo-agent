@@ -196,3 +196,4 @@ async def get_index():
     if index_file.exists():
         return FileResponse(str(index_file))
     return HTMLResponse("<h1>Meta Muse Autonomous Agent API is Running</h1>")
+
