@@ -14,6 +14,9 @@ from pydantic import BaseModel
 
 from muse_agent.config import settings
 from muse_agent.core.agent import AgentState, MuseAgent
+from muse_agent.daemon.storage import DaemonStorage, TaskPriority
+from muse_agent.daemon.watchers import SystemWatcher
+from muse_agent.daemon.launchd import LaunchdManager
 from muse_agent.models.meta_muse import MetaMuseModel
 from muse_agent.models.mock_model import MockMuseModel
 
@@ -148,6 +151,60 @@ async def stop_task():
         await manager.broadcast({"type": "state_change", "state": AgentState.STOPPED.value})
         return {"status": "stopped"}
     return {"status": "no_active_agent"}
+
+
+@app.get("/api/daemon/status")
+async def get_daemon_status():
+    storage = DaemonStorage()
+    watcher = SystemWatcher()
+    snap = watcher.capture_snapshot()
+    launchd = LaunchdManager().get_status()
+    pid_file = Path("data/daemon.pid")
+    is_running = pid_file.exists()
+    pid = int(pid_file.read_text().strip()) if is_running else None
+    hb = storage.get_latest_heartbeat()
+
+    return {
+        "running": is_running,
+        "pid": pid,
+        "launchd": launchd,
+        "system": {
+            "cpu_percent": snap.cpu_percent,
+            "memory_percent": snap.memory_percent,
+            "disk_free_gb": snap.disk_free_gb,
+            "battery_percent": snap.battery_percent,
+            "is_charging": snap.is_charging,
+            "user_idle_seconds": snap.user_idle_seconds,
+            "is_user_active": snap.is_user_active
+        },
+        "heartbeat": hb
+    }
+
+
+@app.get("/api/queue")
+async def get_queue():
+    storage = DaemonStorage()
+    return {"tasks": storage.list_tasks(limit=30)}
+
+
+class EnqueueRequest(BaseModel):
+    goal: str
+    priority: Optional[str] = "normal"
+    max_steps: Optional[int] = 25
+
+
+@app.post("/api/queue")
+async def enqueue_task(req: EnqueueRequest):
+    storage = DaemonStorage()
+    p = TaskPriority(req.priority.lower())
+    task_id = storage.add_task(goal=req.goal, priority=p, max_steps=req.max_steps)
+    return {"status": "enqueued", "task_id": task_id, "goal": req.goal, "priority": p.value}
+
+
+@app.get("/api/schedules")
+async def get_schedules():
+    storage = DaemonStorage()
+    return {"schedules": storage.list_schedules()}
 
 
 @app.get("/api/screenshot")

@@ -74,6 +74,24 @@ body {
   display: block;
 }
 
+/* 24/7 Daemon Ribbon */
+.daemon-ribbon {
+  height: 32px;
+  background: rgba(0, 240, 255, 0.03);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 24px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.daemon-ribbon strong {
+  color: var(--text-main);
+}
+
 .status-group {
   display: flex;
   align-items: center;

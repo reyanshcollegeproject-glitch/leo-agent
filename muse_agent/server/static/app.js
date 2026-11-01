@@ -213,6 +213,43 @@ btnStop.addEventListener('click', async () => {
   }
 });
 
+async function updateDaemonStats() {
+  try {
+    const res = await fetch('/api/daemon/status');
+    if (!res.ok) return;
+    const data = await res.json();
+
+    const daemonStatusEl = document.getElementById('daemon-online-status');
+    if (daemonStatusEl) {
+      daemonStatusEl.textContent = data.running ? `ONLINE (PID ${data.pid})` : 'STANDBY';
+      daemonStatusEl.style.color = data.running ? 'var(--accent-green)' : 'var(--text-muted)';
+    }
+
+    const sys = data.system;
+    if (sys) {
+      const batEl = document.getElementById('stat-battery');
+      if (batEl) batEl.textContent = `${sys.battery_percent}% ${sys.is_charging ? '⚡' : '🔋'}`;
+
+      const cpuEl = document.getElementById('stat-cpu');
+      if (cpuEl) cpuEl.textContent = `${sys.cpu_percent}%`;
+
+      const ramEl = document.getElementById('stat-ram');
+      if (ramEl) ramEl.textContent = `${sys.memory_percent}%`;
+
+      const diskEl = document.getElementById('stat-disk');
+      if (diskEl) diskEl.textContent = `${sys.disk_free_gb} GB`;
+
+      const presEl = document.getElementById('stat-presence');
+      if (presEl) presEl.textContent = sys.is_user_active ? 'User Active' : `Idle (${Math.round(sys.user_idle_seconds)}s)`;
+    }
+  } catch (e) {
+    // Ignore transient network errors
+  }
+}
+
+setInterval(updateDaemonStats, 3000);
+updateDaemonStats();
+
 // Init
 connectWebSocket();
 
