@@ -44,7 +44,7 @@ class RealtimeVoiceAssistant:
 
     def __init__(
         self,
-        voice_name: str = "Samantha",
+        voice_name: str = "Daniel",
         speech_rate: int = 200,
         energy_threshold: float = 350.0,
         silence_timeout_seconds: float = 0.55
@@ -60,8 +60,20 @@ class RealtimeVoiceAssistant:
         self._recognizer = sr.Recognizer() if SPEECH_REC_AVAILABLE else None
 
         self.fast_engine = FastDecisionEngine()
-        self.perceiver = ScreenPerceiver()
-        self.controller = OSController(perceiver=self.perceiver)
+        self._perceiver: Optional[ScreenPerceiver] = None
+        self._controller: Optional[OSController] = None
+
+    @property
+    def perceiver(self) -> ScreenPerceiver:
+        if self._perceiver is None:
+            self._perceiver = ScreenPerceiver()
+        return self._perceiver
+
+    @property
+    def controller(self) -> OSController:
+        if self._controller is None:
+            self._controller = OSController(perceiver=self.perceiver)
+        return self._controller
 
         self.on_state_change: Optional[Callable[[str], None]] = None
         self.on_transcript: Optional[Callable[[str], None]] = None
@@ -87,7 +99,7 @@ class RealtimeVoiceAssistant:
             self.interrupt_speech()
             self.is_speaking = True
             try:
-                cmd = ["/usr/bin/say", "-v", self.voice_name, "-r", str(self.speech_rate), clean]
+                cmd = ["/bin/bash", "/Users/reyansh/Desktop/contribute/auto agent/MacPilotAI/scripts/speak_human.sh", clean]
                 self._current_speech_proc = subprocess.Popen(cmd)
                 self._current_speech_proc.wait()
             except Exception as e:
@@ -239,3 +251,4 @@ class RealtimeVoiceAssistant:
     def stop(self) -> None:
         self.is_running = False
         self.interrupt_speech()
+

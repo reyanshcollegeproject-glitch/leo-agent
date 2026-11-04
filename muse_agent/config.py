@@ -24,9 +24,17 @@ class AgentConfig(BaseSettings):
         default="meta_muse",
         description="Provider identifier: 'meta_muse', 'openai', 'anthropic', or 'custom'"
     )
+    muse_control_model: str = Field(
+        default=os.getenv("MUSE_CONTROL_MODEL", "muse-wonder-1.0"),
+        description="Meta AI model for deep computer control & tool planning"
+    )
+    muse_talk_model: str = Field(
+        default=os.getenv("MUSE_TALK_MODEL", "muse-spark-1.3"),
+        description="Meta AI model for fast natural conversation & real-time voice speech"
+    )
     muse_model_name: str = Field(
         default="muse-wonder-1.0",
-        description="Meta AI Muse model version: 'muse-wonder-1.0' (flagship) or 'muse-spark-1.3' (fast agent)"
+        description="Default Meta AI Muse model version"
     )
     muse_api_key: Optional[str] = Field(
         default=os.getenv("MUSE_API_KEY", ""),

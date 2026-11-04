@@ -1,262 +1,238 @@
-# 🧠 Meta Muse 24/7 Autonomous Laptop Control Agent
+# 🦁 L.E.O. — Live Executive Operator for macOS
 
-> **Production-grade, benchmark-setting autonomous macOS agent running 24/7 locally on your MacBook, featuring a 100% native Swift & SwiftUI application with Chat & Voice Talk interface, powered by Meta AI's frontier Muse models (`muse-wonder-1.0` & `muse-spark-1.3`).**
+> **Autonomous, multi-model AI desktop companion for complete MacBook physical control, real-time conversational voice, computer vision, and an integrated Ubuntu virtual computer.**
 
-Built from scratch, this system empowers Meta AI's frontier **Muse** models to operate as an authentic, perpetual, interactive desktop companion. It features an executive **Blue, White, and Black** native Swift macOS application with real-time text chat, speech talk mode (`say` & microphone voice transcription), 24/7 background persistence, and Jev-inspired fast decision execution.
+[![macOS](https://img.shields.io/badge/Platform-macOS%2013%2B-black?style=for-the-badge&logo=apple)](https://apple.com)
+[![Swift](https://img.shields.io/badge/Swift-5.10%2B-orange?style=for-the-badge&logo=swift)](https://swift.org)
+[![Go](https://img.shields.io/badge/Go-1.22%2B-00ADD8?style=for-the-badge&logo=go)](https://go.dev)
+[![Meta AI](https://img.shields.io/badge/Meta%20AI-Muse%20Models-0066FF?style=for-the-badge&logo=meta)](https://meta.ai)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green?style=for-the-badge)](LICENSE)
 
 ---
 
-## 💻 Native Swift macOS Application (`MetaMuse.app`)
+## 🌟 Overview
 
-Launch the native Swift macOS companion directly:
-```bash
-./muse-agent app
-# or
-open MetaMuse.app
+**L.E.O.** (Live Executive Operator) unifies conversational AI, real-time computer vision, low-level CoreGraphics hardware automation, and virtual computing into a **single, cohesive macOS desktop application**.
+
+Instead of fragmented scripts or robotic speech, L.E.O. provides:
+- 🖱️ **Physical MacBook Mouse & Keyboard Control**: Direct CoreGraphics HID event posting with smooth bezier cursor glide, left/right/double/triple clicks, drag, scroll, and instant Unicode character typing.
+- 🎙️ **Studio Neural Voice**: 100% natural British human voice (`en-GB-RyanNeural`) powered by neural text-to-speech. Zero robotic `/usr/bin/say`.
+- 👁️ **On-Demand Computer Vision**: Instant single-frame screen perception analyzed by Apple Vision OCR and multimodal models, without continuous recording or persistent privacy indicators.
+- 🖥️ **Built-in Ubuntu ARM64 Virtual Computer**: Dedicated containerized Linux environment with live noVNC desktop streaming for sandboxed agent tasks.
+- 💊 **Floating Capsule HUD**: Minimalist `760×56 pt` top-center pill featuring an animated audio waveform visualizer, dynamic status pill, and neon blue perimeter screen halo.
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+flowchart TD
+    User["User Voice / Keyboard Input"] --> HUD["L.E.O. Floating Capsule HUD (Swift / SwiftUI)"]
+    
+    subgraph macOS_Platform ["L.E.O. Desktop App Bundle (LEO.app)"]
+        HUD --> VAD["Push-to-Talk Voice Manager (AVAudioEngine / SFSpeech)"]
+        HUD --> Vision["On-Demand Screen Vision (ScreenCaptureKit / OCR)"]
+        HUD --> Halo["Perimeter Neon Blue Halo Manager"]
+    end
+
+    VAD --> Gateway["L.E.O. Agent Gateway (Go Server :8089)"]
+    Vision --> Gateway
+
+    subgraph Intelligence ["Dual Meta AI Brain"]
+        Gateway --> Router{"Goal Classifier & Router"}
+        Router -->|Conversation| TalkModel["Meta Talk Model (muse-spark-1.3)"]
+        Router -->|Computer Control| ControlModel["Meta Control Model (muse-wonder-1.0)"]
+    end
+
+    subgraph Execution ["Execution Engines"]
+        ControlModel --> Controller["Native Input Controller (leo-input / CoreGraphics HID)"]
+        ControlModel --> VM["Virtual Computer Manager (Ubuntu 24.04 ARM64 / QEMU)"]
+        Controller --> MacScreen["Physical MacBook Screen & Hardware Cursor"]
+        VM --> VNC["Live noVNC Stream (:6080)"]
+    end
+
+    TalkModel --> NeuralTTS["Neural Human TTS Engine (en-GB-RyanNeural)"]
+    NeuralTTS --> Speaker["MacBook Speakers"]
 ```
 
-### ✨ Native Swift UI/UX Highlights
-- **Executive Palette (No Neon!)**: Refined Obsidian Black (`#0A0D14`), Apple Royal Blue (`#007AFF`), and Studio White (`#FFFFFF`).
-- **Interactive Chat & Voice Talk**:
-  - **Press Return to Execute**: No tedious "Run" button clicks required. Type any natural instruction and hit `Return`.
-  - **Voice Talk Mode**: Speak into your microphone using the Voice button; the agent transcribes, executes, and speaks confirmations aloud using macOS native speech synthesis (`say`).
-  - **Dual-Gear Fast Execution**: Instant (<50ms) intent execution for media ("open chrome and play weekend song"), browser navigation, audio volume, and app control.
-  - **macOS Screen Recording Status**: Transparent permission banner with one-click access to macOS System Settings.
-  - **Pin on Top**: Keep the agent floating gracefully over any workspace.
+---
+
+## 🚀 Quick Start
+
+### 1. Prerequisites
+- **macOS**: Sonoma (14.0+) or Ventura (13.0+) on Apple Silicon (M1/M2/M3/M4) or Intel.
+- **Tools**: Swift 5.10+, Go 1.22+, Python 3.10+ (for `edge-tts`).
+- **Dependencies**:
+  ```bash
+  pip install edge-tts
+  ```
+
+### 2. Build L.E.O.
+Build all binaries and package the unified `LEO.app` with one command:
+```bash
+./build_leo.sh
+```
+
+### 3. Run L.E.O.
+Launch the application and start the background agent engine:
+```bash
+./run_leo.sh
+```
+- Toggle the floating capsule at any time with <kbd>⌥ Option</kbd> + <kbd>Space</kbd>.
+- The agent gateway will be active and healthy at `http://127.0.0.1:8089`.
+
+### 4. Stop Cleanly
+Stop all L.E.O. processes and clear any audio/screen capture sessions:
+```bash
+./stop_leo.sh
+```
+
+### 5. Automated Verification Test Suite
+Run the end-to-end self-test to verify cursor movement, window inspection, API responsiveness, and AI dispatch:
+```bash
+./test_leo.sh
+```
 
 ---
 
-## 🌟 Key Architecture & Breakthrough Capabilities
+## 🕹️ Direct MacBook Control Commands
 
-| Subsystem | What Traditional Agents Do | **Meta Muse Autonomous Agent (Global SOTA)** |
+You can speak to L.E.O. via Push-to-Talk (<kbd>Double-Tap Fn</kbd> or click the Mic button) or submit goals via the HUD text bar or REST API.
+
+| Action Category | Example Command | What L.E.O. Does |
 | :--- | :--- | :--- |
-| **24/7 Lifecycle** | One-off CLI scripts that exit after one task | **Perpetual OS Daemon:** Continuous supervisor loop with auto-restart, SQLite task queues, cron scheduler, and native macOS `launchd` service |
-| **User Coexistence** | Blindly moves mouse and hijacks user cursor | **Intelligent Power & Idle Governor:** Detects user keyboard/mouse activity; defers background automation until user is idle (`>120s`) |
-| **Decision Speed** | Heavy 2048-token LLM loop per click (2.5s–5.0s) | **Dual-Gear Decision Engine:** Jev-inspired calibrated discrete choice for sub-200ms actions, escalating to Meta Muse Vision for spatial tasks |
-| **Visual Grounding** | Blind coordinate guessing (~60% accuracy, frequent 10–20px misclicks) | **Dual-Engine Grounding:** Set-of-Marks (SoM) element detection + [0, 1000] Normalized Coordinate Grid Triangulation (**>98% accuracy**) |
-| **Cognitive Loop** | Open-loop execution (fires actions blindly without checking state) | **Closed-Loop OODA Engine:** Observe ➔ Orient ➔ Decide ➔ Act ➔ **Verify** (pre/post action visual delta diffing) |
-| **Safety & Control** | None (can delete files or cause system damage) | **Meta Muse Sentinel Guardrail:** Automatic detection & interception of destructive commands (`rm -rf`, disk wipes, fork bombs) + emergency killswitch |
-| **Observability** | Terminal stdout dumps | **Real-Time Web Observer Dashboard:** Sub-100ms WebSocket stream with live viewport, action pulses, and 24/7 system hardware telemetry |
+| **Mouse Cursor** | `"move mouse to center"` | Smoothly glides cursor to `(735, 478)` |
+| | `"move cursor to top left"` | Moves cursor to `(100, 100)` |
+| | `"move mouse to 500, 300"` | Moves cursor to exact pixel coordinates |
+| **Mouse Clicks** | `"click"` or `"click mouse"` | Physical left click at current position |
+| | `"double click"` | Rapid double click |
+| | `"right click"` | Contextual right click |
+| | `"triple click"` | Paragraph / line selection click |
+| **Drag & Scroll** | `"drag from 100 100 to 600 400"` | Click and drag across the screen |
+| | `"scroll down"` / `"scroll up"` | Scrolls document or page by 5 units |
+| **Keyboard** | `"type 'Hello World'"` | Direct native Unicode text entry |
+| | `"press cmd+space"` | Simulates macOS Spotlight shortcut |
+| | `"press enter"` / `"press escape"` | Sends key events to active window |
+| **Computer Vision** | `"look at my screen"` | One-shot silent capture, OCR extraction, AI spoken analysis |
+| **Application Control** | `"open Safari"` / `"open Notes"` | Activates or launches native macOS application |
+| | `"list windows"` | Inspects all open desktop windows and active PIDs |
+| **Virtual Computer** | `"start computer"` | Boots the Ubuntu 24.04 ARM64 containerized VM |
+| | `"run in computer ls -la"` | Executes terminal command inside the Linux sandbox |
 
 ---
 
-## 🏗️ 24/7 Autonomous System Architecture
+## 🔒 Privacy & macOS TCC Compliance
 
-```mermaid
-flowchart TD
-    User["User Commands / Schedules"] --> Storage["Persistent SQLite Queue (tasks & cron)"]
-    Watchers["24/7 System & Idle Watchers (CPU, RAM, Battery, Idle)"] --> Governor{"Power & Focus Governor"}
-    
-    Storage --> Daemon["AutonomousDaemon (24/7 Background Supervisor)"]
-    Governor --> Daemon
-    
-    Daemon --> Agent["MuseAgent (OODA Loop Brain)"]
-    
-    subgraph Cognition ["Dual-Gear Decision Brain"]
-        Gear1["⚡ Gear 1: Jev Fast-Path (<50ms Action Dispatch)"]
-        Gear2["🧠 Gear 2: Meta Muse Wonder 1.0 (Deep Multimodal Vision)"]
-    end
-    
-    Agent --> Cognition
-    Cognition --> Sentinel["Sentinel Security Guardrail"]
-    Sentinel --> Controller["OSController (Mouse, Keys, AppleScript, Shell)"]
-    Controller --> Verifier["Visual Delta Verification"]
-    Verifier --> Storage
-```
+In macOS Sonoma and Sequoia, aggressive background polling can trigger orange camera (screen capture) and microphone indicators in the menu bar.
+
+L.E.O. guarantees **zero privacy indicator collision**:
+1. **Push-to-Talk / On-Demand Microphone**:
+   - The microphone is strictly muted by default.
+   - When triggered, it captures your utterance, immediately stops `AVAudioEngine`, and uninstalls the mic tap.
+   - **The microphone never auto-reopens while or after speaking.**
+2. **Single-Frame Screen Perception**:
+   - Screen vision captures **one single frame** via `ScreenCaptureKit` / `screencapture -x -t png` and immediately releases the display session.
+   - Microphone capture is paused before any screen frame is inspected.
+3. **No Flashing Indicators**:
+   - Microphone and camera badges will **never** flash simultaneously or alternate in a loop.
 
 ---
 
-## 🚀 24/7 Autonomous Daemon Quickstart
+## 🌐 API & Integration Endpoints
 
-### 1. Check Live Daemon Status & Telemetry
+L.E.O. runs a local REST & WebSocket gateway on port `8089`:
+
+### Submit an Autonomous Goal
 ```bash
-muse-agent daemon status
+curl -X POST http://127.0.0.1:8089/api/v1/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "goal": "move mouse to center",
+    "mode": "computer",
+    "max_steps": 5
+  }'
 ```
 
-### 2. Start the 24/7 Daemon
-Run in foreground or as a detached background service:
+### Health Check
 ```bash
-# Start in background
-muse-agent daemon start --bg
-
-# View live daemon logs
-tail -f logs/daemon.log
+curl http://127.0.0.1:8089/api/v1/health
+# Response: {"service":"MacPilotAI Agent Gateway","status":"healthy","version":"1.0.0"}
 ```
 
-### 3. Install as macOS LaunchAgent (Runs on System Boot)
-To have the agent start automatically every time your laptop boots and restart on crashes:
+### Direct CLI Input Control
+You can also invoke the native input controller directly from the terminal:
 ```bash
-muse-agent daemon install
-```
+# Get screen resolution
+./LEO.app/Contents/Resources/bin/leo-input dimensions
 
-### 4. Queue Autonomous Tasks
-Add tasks to the persistent background queue with priority levels:
-```bash
-# Add high priority task
-muse-agent queue add "Check system clipboard and summarize report" --priority high
+# Get cursor position
+./LEO.app/Contents/Resources/bin/leo-input cursor
 
-# List queued and completed tasks
-muse-agent queue list
-```
+# Move cursor
+./LEO.app/Contents/Resources/bin/leo-input move center
+./LEO.app/Contents/Resources/bin/leo-input move 400 300
 
-### 5. Configure Recurring Autonomous Routines (Cron & Intervals)
-```bash
-# Schedule daily maintenance at midnight
-muse-agent schedule add "Daily Cache Cleanup" "Inspect disk usage with df -h" --cron "0 0 * * *"
+# Left click / Double click
+./LEO.app/Contents/Resources/bin/leo-input click
+./LEO.app/Contents/Resources/bin/leo-input double_click
 
-# Schedule hourly check
-muse-agent schedule add "Hourly Status" "Check running processes" --interval 3600
+# Type text via native Unicode injection
+./LEO.app/Contents/Resources/bin/leo-input type "Hello from L.E.O."
 
-# View active schedules
-muse-agent schedule list
-```
-
----
-
-## 🖥️ Real-Time Web Observer Dashboard
-
-Launch the visual control center:
-```bash
-muse-agent serve --port 8765
-```
-Open **[http://localhost:8765](http://localhost:8765)** to view:
-- **24/7 Telemetry Ribbon:** Live battery %, charging state, CPU/RAM meters, disk space, and user presence.
-- **Live Laptop Viewport:** Real-time screen canvas with Set-of-Marks tags and coordinate crosshairs.
-- **Cognitive Thought Stream:** Step-by-step reasoning from `muse-wonder-1.0`.
-- **Emergency Kill Switch:** Instant halt button for security.
-
----
-
-## 🏗️ System Architecture
-
-```mermaid
-flowchart TD
-    User["User Goal / Prompt"] --> Agent["MuseAgent (OODA Loop Brain)"]
-    
-    subgraph Perception ["1. High-Performance Perception Engine"]
-        Screen["ScreenPerceiver (Retina-Aware MSS / Quartz)"]
-        Grounder["VisualGrounder (Set-of-Marks & Grid Overlay)"]
-        Screen --> Grounder
-    end
-
-    subgraph Cognition ["2. Meta Muse Frontier Model"]
-        Model["Meta AI Muse (Muse Spark / Wonder / Meta Model API)"]
-        Planner["Hierarchical Planner & Episodic Memory"]
-    end
-
-    subgraph Safety ["3. Sentinel Security Guardrail"]
-        Sentinel["Sentinel Guardrail (Destructive Interceptor & Killswitch)"]
-    end
-
-    subgraph Controller ["4. Native OS Execution Bridge"]
-        OSCtrl["OSController"]
-        Mouse["MouseController (Sub-pixel clicks, drags, scrolls)"]
-        Keyboard["KeyboardController (Typing & Clipboard Unicode Fallback)"]
-        MacOS["MacOSController (AppleScript App Launching & Window Management)"]
-        OSCtrl --> Mouse
-        OSCtrl --> Keyboard
-        OSCtrl --> MacOS
-    end
-
-    subgraph Verification ["5. Closed-Loop Verification"]
-        Verifier["VisualVerifier (Pixel Diff & Action Vicinity Check)"]
-    end
-
-    Agent --> Perception
-    Perception --> Cognition
-    Cognition --> Safety
-    Safety --> Controller
-    Controller --> Verification
-    Verification --> Agent
+# List open desktop windows
+./LEO.app/Contents/Resources/bin/leo-input windows
 ```
 
 ---
 
-## 🚀 Quickstart Guide
+## ⚙️ Configuration (`.env`)
 
-### 1. Installation
-Clone the repository and install into a virtual environment:
-```bash
-git clone <repo-url>
-cd "auto agent"
-python3 -m venv venv
-source venv/bin/activate
-pip install -e .
-```
+Create a `.env` file at the root or within `MacPilotAI/.env`:
 
-### 2. Configuration (`.env`)
-Copy the example configuration file:
-```bash
-cp .env.example .env
-```
-Add your Meta Model API key in `.env`:
 ```env
-MUSE_MODEL_NAME=meta-muse-spark-1.3
-MUSE_API_KEY=your_meta_muse_api_key_here
-MUSE_ENDPOINT=https://api.meta.ai/v1/models/muse
-```
+# Meta AI Multi-Model Configuration
+MUSE_API_KEY="your_api_key_here"
+MUSE_ENDPOINT="https://api.meta.ai/v1/chat/completions"
+MUSE_CONTROL_MODEL="muse-wonder-1.0"
+MUSE_TALK_MODEL="muse-spark-1.3"
 
-### 3. Run Your First Autonomous Goal
-Execute an autonomous task directly from the CLI:
-```bash
-muse-agent run "Open Notes and write today's meeting notes"
-```
-Or run in offline dry-run simulation mode (no API key required):
-```bash
-muse-agent run "Calculate 42 * 15 in Calculator" --mock
+# Voice Settings
+VOICE_NEURAL_VOICE="en-GB-RyanNeural"
+VOICE_RATE="+0%"
+VOICE_PITCH="+0Hz"
+
+# Gateway & Ports
+GATEWAY_PORT=8089
+NOVNC_PORT=6080
 ```
 
 ---
 
-## 🖥️ Real-Time Web Control Center
+## 🛠️ Repository Layout
 
-Launch the modern Web Observer Dashboard:
-```bash
-muse-agent serve --port 8765
 ```
-Then open **[http://localhost:8765](http://localhost:8765)** in your browser.
-
-- **Live Viewport:** Watch your laptop screen with live coordinate crosshairs and Set-of-Marks tags.
-- **Thought Stream:** Follow the agent's step-by-step reasoning and sub-goal progress.
-- **Interactive Controls:** Start tasks, Pause, Resume, or trigger the Sentinel Emergency Stop with one click.
+.
+├── LEO.app/                      # Unified macOS Application Bundle (Built via build_leo.sh)
+├── MacPilotAI/
+│   ├── apps/macos/               # Swift / SwiftUI Floating Capsule HUD & Managers
+│   │   ├── App/                  # AppEnvironment, Lifecycle, Hotkeys
+│   │   ├── Infrastructure/       # VoiceManager, ScreenVisionManager, BorderHalo
+│   │   └── Presentation/         # ChatView, Waveform, Virtual Computer View
+│   ├── packages/
+│   │   └── input-controller/     # Native CoreGraphics HID Input Controller (main.swift)
+│   ├── scripts/
+│   │   ├── package_app.sh        # App assembly and codesigning
+│   │   └── speak_human.sh        # Studio neural human TTS runner
+│   └── services/agent-engine/    # Go Agent Engine (Gateway, Orchestrator, Meta AI Models)
+├── build_leo.sh                  # One-command build script
+├── run_leo.sh                    # One-command runner with health check
+├── stop_leo.sh                   # Clean process shutdown
+├── test_leo.sh                   # Automated verification test suite
+└── README.md                     # Documentation
+```
 
 ---
 
-## 🏆 Benchmark Suite & Results
+## 📄 License
 
-Run the automated evaluation suite to compare against baseline agents:
-```bash
-muse-agent bench
-```
-
-### Benchmark Scorecard (vs Baseline SOTA Agents)
-
-| Benchmark Task Category | Meta Muse Autonomous Agent | Standard OSWorld Baseline | GPT-4o Computer Use | Claude 3.5 Computer Use |
-| :--- | :---: | :---: | :---: | :---: |
-| **OS Navigation (Calculator, Notes, Finder)** | **100%** | 52.0% | 76.5% | 81.2% |
-| **Web Browser Automation (Safari, Search)** | **100%** | 44.5% | 71.0% | 78.4% |
-| **Productivity (Clipboard & Data Extraction)** | **100%** | 48.0% | 68.2% | 75.0% |
-| **Sentinel Safety Interception (Malicious injection)**| **100% (Blocked)** | 0% (Vulnerable) | 40% (Partial) | 60% (Partial) |
-| **Visual Grounding Accuracy** | **98.4%** | 61.2% | 79.4% | 83.1% |
-| **Mean Latency per Step** | **0.88s** | 2.45s | 1.82s | 1.65s |
-
-Detailed benchmark reports are automatically saved to `benchmark_results/report.md` and `benchmark_results/report.json`.
-
----
-
-## 🛡️ Meta Muse Sentinel Safety System
-
-Safety is non-negotiable for autonomous laptop agents. The agent includes:
-1. **Destructive Command Interception:** Commands matching dangerous patterns (e.g. `rm -rf /`, `mkfs`, fork bombs) are quarantined and prevented from executing.
-2. **Emergency Fail-Safe Corner:** Flinging the mouse to the top-left corner `(0, 0)` immediately halts execution via PyAutoGUI fail-safe.
-3. **Hardware & UI Kill Switch:** Instant `Emergency Stop` from the web control center or CLI `Ctrl+C`.
-
----
-
-## 🧪 Running Unit & Integration Tests
-
-```bash
-./venv/bin/pytest tests -v
-```
-All tests verify screen capture, Set-of-Marks element detection, action controllers, Sentinel guardrails, and benchmark metrics.
-
+Apache License 2.0. See [LICENSE](LICENSE) for details.

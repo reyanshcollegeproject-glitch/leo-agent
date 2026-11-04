@@ -33,7 +33,7 @@ class VoiceEngine:
     2. Real-time microphone capture & speech-to-text (STT) transcription via sounddevice & speech_recognition.
     """
 
-    def __init__(self, voice_name: str = "Samantha", speech_rate: int = 190):
+    def __init__(self, voice_name: str = "Daniel", speech_rate: int = 190):
         self.voice_name = voice_name
         self.speech_rate = speech_rate
         self.is_speaking = False
@@ -59,8 +59,8 @@ class VoiceEngine:
                 self.stop_speaking()
                 self.is_speaking = True
                 try:
-                    # Prefer Samantha or default system voice
-                    cmd = ["/usr/bin/say", "-r", str(self.speech_rate), clean_text]
+                    # Studio-Quality Neural Human Voice
+                    cmd = ["/bin/bash", "/Users/reyansh/Desktop/contribute/auto agent/MacPilotAI/scripts/speak_human.sh", clean_text]
                     self._current_process = subprocess.Popen(cmd)
                     self._current_process.wait()
                 except Exception as e:

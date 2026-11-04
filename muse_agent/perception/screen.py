@@ -41,7 +41,7 @@ class ScreenPerceiver:
 
     def __init__(self, display_index: int = 0):
         self.display_index = display_index
-        self._screen_info = self._detect_screen_geometry()
+        self._screen_info: Optional[ScreenInfo] = None
         self.last_capture_was_blank = False
 
     @staticmethod
@@ -112,6 +112,8 @@ class ScreenPerceiver:
 
     @property
     def info(self) -> ScreenInfo:
+        if self._screen_info is None:
+            self._screen_info = self._detect_screen_geometry()
         return self._screen_info
 
     def capture(self) -> Image.Image:

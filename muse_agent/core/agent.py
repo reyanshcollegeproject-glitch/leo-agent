@@ -39,6 +39,7 @@ class MuseAgent:
     def __init__(
         self,
         model: BaseVisionModel,
+        talk_model: Optional[Any] = None,
         perceiver: Optional[ScreenPerceiver] = None,
         grounder: Optional[VisualGrounder] = None,
         verifier: Optional[VisualVerifier] = None,
@@ -47,6 +48,8 @@ class MuseAgent:
         run_id: Optional[str] = None
     ):
         self.model = model
+        self.control_model = model
+        self.talk_model = talk_model
         self.perceiver = perceiver or ScreenPerceiver(display_index=settings.display_index)
         self.grounder = grounder or VisualGrounder()
         self.verifier = verifier or VisualVerifier(threshold=settings.diff_threshold)

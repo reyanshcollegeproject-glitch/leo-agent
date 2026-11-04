@@ -1,9 +1,38 @@
+# Environments & Secrets
+.env
+*.env
+!.env.example
+*.env.local
+
+# Build artifacts & binaries
+*.app/
+*.app
+.build/
+**/.build/
+bin/
+**/bin/
+*.o
+*.dSYM/
+**/*.dSYM/
+
+# Databases & logs
+*.db
+*.db-journal
+**/*.db
+**/*.db-journal
+*.log
+**/*.log
+
+# Python
 venv/
+.venv/
 __pycache__/
 *.pyc
 .pytest_cache/
 runs/
 *.egg-info/
+
+# macOS
 .DS_Store
-.env
+**/.DS_Store
 

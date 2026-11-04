@@ -310,8 +310,8 @@ class AgentBridge: ObservableObject {
         guard voiceFeedbackEnabled, !text.isEmpty else { return }
         Task.detached(priority: .background) {
             let p = Process()
-            p.executableURL = URL(fileURLWithPath: "/usr/bin/say")
-            p.arguments = ["-v", "Samantha", text]
+            p.executableURL = URL(fileURLWithPath: "/bin/bash")
+            p.arguments = ["/Users/reyansh/Desktop/contribute/auto agent/MacPilotAI/scripts/speak_human.sh", text]
             try? p.run()
         }
     }
